@@ -1,3 +1,4 @@
+import 'package:application_supporting_the_management_of_shooting_competitions/pages/player_list_selector_page.dart';
 import 'package:flutter/material.dart';
 import 'competition_selector_page.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/custom_button.dart';
@@ -40,9 +41,12 @@ class HomePage extends StatelessWidget {
                     child: CustomButton(
                       width: double.infinity,
                       height: double.infinity,
-                      imagePath: 'lib/images/buttonShooters.jpg',
-                      text: 'Tile 1',
-                      onPressed: () {},
+                      imagePath: 'lib/images/PlayersList.jpg',
+                      text: 'Lista zawodników',
+                      onPressed: () {
+                        Navigator.push(context, 
+                        MaterialPageRoute(builder: (context) => const PlayerList()));
+                      },
                     ),
                   ),
                   const SizedBox(height: 8), // Przerwa między kafelkami
