@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '';
 class CompetitionSelector extends StatelessWidget {
   const CompetitionSelector({super.key});
 
