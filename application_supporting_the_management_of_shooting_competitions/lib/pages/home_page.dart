@@ -9,7 +9,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Custom Layout'),
+        title: const Text('App'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
