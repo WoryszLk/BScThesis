@@ -1,0 +1,18 @@
+{
+    "cmake.sourceDirectory": "D:/PracaInzynierska/BScThesis/application_supporting_the_management_of_shooting_competitions/windows/flutter",
+    "version": "0.2.0",
+    "configurations": [
+    {
+      "name": "Flutter (Windows)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define=FLUTTER_WEB_AUTO_DETECT=true"
+      ],
+      "cwd": "${workspaceFolder}",
+      "flutterMode": "debug",
+      "flutterPlatform": "windows"
+    }
+]
+}
