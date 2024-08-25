@@ -11,11 +11,20 @@ class CompetitionSelector extends StatefulWidget {
 class _CompetitionSelectorState extends State<CompetitionSelector> {
   int _selectedIndex = -1;
 
+  final List<Map<String, String>> _competitions = [
+    {'text': 'FBI', 'imagePath': 'lib/images/fbi.jpg'},
+    {'text': 'PIRO', 'imagePath': 'lib/images/piro.jpg'},
+    {'text': '2guns 2pistols', 'imagePath': 'lib/images/2guns_2pistols.jpg'},
+    {'text': 'Piromanek', 'imagePath': 'lib/images/piromanek.jpg'},
+    {'text': 'Top Gun', 'imagePath': 'lib/images/top_gun.jpg'},
+    {'text': 'BTG', 'imagePath': 'lib/images/btg.jpg'},
+  ];
+
   void _onItemSelected(int index) {
     setState(() {
       _selectedIndex = index;
     });
-    Navigator.pop(context, _selectedIndex); // Zwraca wybrany indeks
+    Navigator.pop(context, _selectedIndex);
   }
 
   @override
@@ -28,10 +37,10 @@ class _CompetitionSelectorState extends State<CompetitionSelector> {
       body: ListWheelScrollView(
         itemExtent: 250,
         physics: const FixedExtentScrollPhysics(),
-        children: List.generate(5, (index) {
+        children: List.generate(_competitions.length, (index) {
           return CustomCompetitionButton(
-            text: '${index + 1} Tryb zawodów',
-            imagePath: 'lib/images/competition_image_$index.jpg', // Zakładając, że masz różne obrazy
+            text: _competitions[index]['text']!,
+            imagePath: _competitions[index]['imagePath']!,
             isSelected: _selectedIndex == index,
             onTap: () => _onItemSelected(index),
           );

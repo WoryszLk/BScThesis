@@ -1,7 +1,6 @@
-import 'package:application_supporting_the_management_of_shooting_competitions/pages/player_list_selector_page.dart';
 import 'package:flutter/material.dart';
-import 'competition_selector_page.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/custom_button.dart';
+import 'competition_selector_page.dart';
 
 class StarterCompetition extends StatefulWidget {
   const StarterCompetition({super.key});
@@ -14,17 +13,29 @@ class _StarterCompetitionState extends State<StarterCompetition> {
   int? _selectedCompetitionIndex;
 
   final List<String> _competitionNames = [
-    'Tryb zawodów 1',
-    'Tryb zawodów 2',
-    'Tryb zawodów 3',
-    'Tryb zawodów 4',
-    'Tryb zawodów 5',
+    'FBI',
+    'PIRO',
+    '2guns 2pistols',
+    'Piromanek',
+    'Top Gun',
+    'BTG',
+  ];
+
+  final List<String> _imagePaths = [
+    'lib/images/fbi.jpg',
+    'lib/images/piro.jpg',
+    'lib/images/2guns_2pistols.jpg',
+    'lib/images/piromanek.jpg',
+    'lib/images/top_gun.jpg',
+    'lib/images/btg.jpg',
   ];
 
   void _navigateToCompetitionSelector() async {
     final selectedIndex = await Navigator.push<int>(
       context,
-      MaterialPageRoute(builder: (context) => const CompetitionSelector()),
+      MaterialPageRoute(
+        builder: (context) => const CompetitionSelector(), // Upewnij się, że CompetitionSelector istnieje
+      ),
     );
 
     if (selectedIndex != null) {
@@ -50,7 +61,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
                 width: double.infinity,
                 height: double.infinity,
                 imagePath: _selectedCompetitionIndex != null
-                    ? 'lib/images/selectedCompetition${_selectedCompetitionIndex! + 1}.jpg'
+                    ? _imagePaths[_selectedCompetitionIndex!]
                     : 'lib/images/buttonShooters.jpg',
                 text: _selectedCompetitionIndex != null
                     ? _competitionNames[_selectedCompetitionIndex!]
@@ -67,23 +78,8 @@ class _StarterCompetitionState extends State<StarterCompetition> {
                     child: CustomButton(
                       width: double.infinity,
                       height: double.infinity,
-                      imagePath: 'lib/images/PlayersList.jpg',
-                      text: 'Lista zawodników',
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const PlayerList()),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Expanded(
-                    child: CustomButton(
-                      width: double.infinity,
-                      height: double.infinity,
                       imagePath: 'lib/images/buttonShooters.jpg',
-                      text: 'Tile 2',
+                      text: 'Zawodnicy',
                       onPressed: () {},
                     ),
                   ),
