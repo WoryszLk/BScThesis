@@ -3,8 +3,36 @@ import 'package:flutter/material.dart';
 import 'competition_selector_page.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/custom_button.dart';
 
-class StarterCompetition extends StatelessWidget {
+class StarterCompetition extends StatefulWidget {
   const StarterCompetition({super.key});
+
+  @override
+  _StarterCompetitionState createState() => _StarterCompetitionState();
+}
+
+class _StarterCompetitionState extends State<StarterCompetition> {
+  int? _selectedCompetitionIndex;
+
+  final List<String> _competitionNames = [
+    'Tryb zawodów 1',
+    'Tryb zawodów 2',
+    'Tryb zawodów 3',
+    'Tryb zawodów 4',
+    'Tryb zawodów 5',
+  ];
+
+  void _navigateToCompetitionSelector() async {
+    final selectedIndex = await Navigator.push<int>(
+      context,
+      MaterialPageRoute(builder: (context) => const CompetitionSelector()),
+    );
+
+    if (selectedIndex != null) {
+      setState(() {
+        _selectedCompetitionIndex = selectedIndex;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,27 +44,25 @@ class StarterCompetition extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            // Lewa kolumna (duży kafelek)
             Expanded(
               flex: 2,
               child: CustomButton(
                 width: double.infinity,
                 height: double.infinity,
-                imagePath: 'lib/images/buttonShooters.jpg',
-                text: 'Wybierz typ zawodów',
-                onPressed: () {
-                  Navigator.push(context, 
-                  MaterialPageRoute(builder: (context) => const CompetitionSelector()));
-                },
+                imagePath: _selectedCompetitionIndex != null
+                    ? 'lib/images/selectedCompetition${_selectedCompetitionIndex! + 1}.jpg'
+                    : 'lib/images/buttonShooters.jpg',
+                text: _selectedCompetitionIndex != null
+                    ? _competitionNames[_selectedCompetitionIndex!]
+                    : 'Wybierz typ zawodów',
+                onPressed: _navigateToCompetitionSelector,
               ),
             ),
-            const SizedBox(width: 8), // Przerwa między kolumnami
-            // Prawa kolumna (trzy mniejsze kafelki)
+            const SizedBox(width: 8),
             Expanded(
               flex: 1,
               child: Column(
                 children: [
-                  // Górny kafelek
                   Expanded(
                     child: CustomButton(
                       width: double.infinity,
@@ -44,13 +70,14 @@ class StarterCompetition extends StatelessWidget {
                       imagePath: 'lib/images/PlayersList.jpg',
                       text: 'Lista zawodników',
                       onPressed: () {
-                        Navigator.push(context, 
-                        MaterialPageRoute(builder: (context) => const PlayerList()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const PlayerList()),
+                        );
                       },
                     ),
                   ),
-                  const SizedBox(height: 8), // Przerwa między kafelkami
-                  // Środkowy kafelek
+                  const SizedBox(height: 8),
                   Expanded(
                     child: CustomButton(
                       width: double.infinity,
@@ -60,8 +87,7 @@ class StarterCompetition extends StatelessWidget {
                       onPressed: () {},
                     ),
                   ),
-                  const SizedBox(height: 8), // Przerwa między kafelkami
-                  // Dolny kafelek
+                  const SizedBox(height: 8),
                   Expanded(
                     child: CustomButton(
                       width: double.infinity,
