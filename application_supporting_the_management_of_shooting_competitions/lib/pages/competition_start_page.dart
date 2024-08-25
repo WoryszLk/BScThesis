@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/custom_button.dart';
 import 'competition_selector_page.dart';
+import 'player_list_selector_page.dart';
 
 class StarterCompetition extends StatefulWidget {
   const StarterCompetition({super.key});
@@ -45,6 +46,14 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
+  void _navigateToPlayersSelector() async {
+    final _navigateToPlayersSelector = await Navigator.push<int>(
+      context,
+      MaterialPageRoute(builder: (context) => const PlayerList(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +89,9 @@ class _StarterCompetitionState extends State<StarterCompetition> {
                       height: double.infinity,
                       imagePath: 'lib/images/buttonShooters.jpg',
                       text: 'Zawodnicy',
-                      onPressed: () {},
+                      onPressed: () {
+                        _navigateToPlayersSelector();
+                      },
                     ),
                   ),
                   const SizedBox(height: 8),
