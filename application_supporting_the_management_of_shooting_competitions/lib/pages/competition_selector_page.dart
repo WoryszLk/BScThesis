@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/custom_competition_button.dart';
 
 class CompetitionSelector extends StatefulWidget {
   const CompetitionSelector({super.key});
@@ -28,19 +29,11 @@ class _CompetitionSelectorState extends State<CompetitionSelector> {
         itemExtent: 250,
         physics: const FixedExtentScrollPhysics(),
         children: List.generate(5, (index) {
-          return GestureDetector(
+          return CustomCompetitionButton(
+            text: '${index + 1} Tryb zawodów',
+            imagePath: 'lib/images/competition_image_$index.jpg', // Zakładając, że masz różne obrazy
+            isSelected: _selectedIndex == index,
             onTap: () => _onItemSelected(index),
-            child: Container(
-              alignment: Alignment.center,
-              color: _selectedIndex == index ? Colors.blue : Colors.white,
-              child: Text(
-                '${index + 1} Tryb zawodów',
-                style: TextStyle(
-                  fontSize: 24,
-                  color: _selectedIndex == index ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
           );
         }),
       ),
