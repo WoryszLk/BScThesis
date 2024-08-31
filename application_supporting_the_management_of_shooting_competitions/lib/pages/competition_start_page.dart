@@ -35,7 +35,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     final selectedIndex = await Navigator.push<int>(
       context,
       MaterialPageRoute(
-        builder: (context) => const CompetitionSelector(), // Upewnij się, że CompetitionSelector istnieje
+        builder: (context) => const CompetitionSelector(),
       ),
     );
 
@@ -47,11 +47,15 @@ class _StarterCompetitionState extends State<StarterCompetition> {
   }
 
   void _navigateToPlayersSelector() async {
-    final _navigateToPlayersSelector = await Navigator.push<int>(
+    await Navigator.push<int>(
       context,
-      MaterialPageRoute(builder: (context) => const PlayerList(),
-      ),
+      MaterialPageRoute(builder: (context) => const PlayerList()),
     );
+  }
+
+  void _startCompetition() {
+    // Logika przycisku Start
+    print('Competition Started');
   }
 
   @override
@@ -89,9 +93,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
                       height: double.infinity,
                       imagePath: 'lib/images/buttonShooters.jpg',
                       text: 'Zawodnicy',
-                      onPressed: () {
-                        _navigateToPlayersSelector();
-                      },
+                      onPressed: _navigateToPlayersSelector,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -102,6 +104,18 @@ class _StarterCompetitionState extends State<StarterCompetition> {
                       imagePath: 'lib/images/buttonShooters.jpg',
                       text: 'Tile 3',
                       onPressed: () {},
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Zmniejszenie szerokości przycisku "Start"
+                  SizedBox(
+                    height: 100, // Ustawienie wysokości na bardziej kompaktową
+                    child: CustomButton(
+                      width: double.infinity,
+                      height: double.infinity,
+                      backgroundColor: Colors.black,
+                      text: 'Start',
+                      onPressed: _startCompetition,
                     ),
                   ),
                 ],
