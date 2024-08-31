@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Player {
-  final String firstName;
-  final String lastName;
-  final String? age;
+  String firstName;
+  String lastName;
+  String? age;
 
   Player({required this.firstName, required this.lastName, this.age});
 }
@@ -22,23 +22,44 @@ class _PlayerListState extends State<PlayerList> {
   final TextEditingController _ageController = TextEditingController();
 
   final List<Player> _players = [];
+  Player? _editingPlayer;
 
-  void _addPlayer() {
+  void _addOrEditPlayer() {
     if (_formKey.currentState!.validate()) {
       setState(() {
-        _players.add(
-          Player(
-            firstName: _firstNameController.text,
-            lastName: _lastNameController.text,
-            age: _ageController.text.isNotEmpty ? _ageController.text : null,
-          ),
-        );
-        // Wyczyść formularz po dodaniu zawodnika
-        _firstNameController.clear();
-        _lastNameController.clear();
-        _ageController.clear();
+        if (_editingPlayer == null) {
+          _players.add(
+            Player(
+              firstName: _firstNameController.text,
+              lastName: _lastNameController.text,
+              age: _ageController.text.isNotEmpty ? _ageController.text : null,
+            ),
+          );
+        } else {
+          _editingPlayer!.firstName = _firstNameController.text;
+          _editingPlayer!.lastName = _lastNameController.text;
+          _editingPlayer!.age = _ageController.text.isNotEmpty ? _ageController.text : null;
+          _editingPlayer = null;
+        }
+        _clearForm();
       });
     }
+  }
+
+  void _editPlayer(Player player) {
+    setState(() {
+      _editingPlayer = player;
+      _firstNameController.text = player.firstName;
+      _lastNameController.text = player.lastName;
+      _ageController.text = player.age ?? '';
+    });
+  }
+
+  void _clearForm() {
+    _firstNameController.clear();
+    _lastNameController.clear();
+    _ageController.clear();
+    _editingPlayer = null;
   }
 
   @override
@@ -51,7 +72,7 @@ class _PlayerListState extends State<PlayerList> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Formularz dodawania zawodnika
+            // Formularz dodawania/edycji zawodnika
             Form(
               key: _formKey,
               child: Column(
@@ -103,26 +124,44 @@ class _PlayerListState extends State<PlayerList> {
                   ),
                   const SizedBox(height: 32.0),
                   ElevatedButton(
-                    onPressed: _addPlayer,
-                    child: const Text('Dodaj zawodnika'),
+                    onPressed: _addOrEditPlayer,
+                    child: Text(_editingPlayer == null ? 'Dodaj zawodnika' : 'Zapisz zmiany'),
                   ),
+                  if (_editingPlayer != null)
+                    TextButton(
+                      onPressed: _clearForm,
+                      child: const Text('Anuluj edycję'),
+                    ),
                 ],
               ),
             ),
             const SizedBox(height: 32.0),
 
-            // Lista dodanych zawodników
+            // Lista dodanych zawodników z możliwością edycji
             Expanded(
               child: _players.isNotEmpty
                   ? ListView.builder(
                       itemCount: _players.length,
                       itemBuilder: (context, index) {
                         final player = _players[index];
-                        return ListTile(
-                          title: Text('${player.firstName} ${player.lastName}'),
-                          subtitle: player.age != null
-                              ? Text('Wiek: ${player.age}')
-                              : const Text('Wiek: nie podano'),
+                        return Card(
+                          margin: const EdgeInsets.symmetric(vertical: 8.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            side: const BorderSide(color: Colors.grey, width: 1.0),
+                          ),
+                          child: ListTile(
+                            title: Text('${player.firstName} ${player.lastName}'),
+                            subtitle: player.age != null
+                                ? Text('Wiek: ${player.age}')
+                                : const Text('Wiek: nie podano'),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {
+                                _editPlayer(player);
+                              },
+                            ),
+                          ),
                         );
                       },
                     )
