@@ -39,7 +39,7 @@ class HomePage extends StatelessWidget {
                       width: double.infinity,
                       height: double.infinity,
                       imagePath: 'lib/images/PlayersList.jpg',
-                      text: 'Moje zawody',
+                      text: 'Zawody które trwają',
                       onPressed: () {
                         Navigator.push(context,
                         MaterialPageRoute(builder: (context) => const PlayerList()));
@@ -58,7 +58,7 @@ class HomePage extends StatelessWidget {
                             width: double.infinity,
                             height: double.infinity,
                             imagePath: 'lib/images/buttonShooters.jpg',
-                            text: 'Tile 3',
+                            text: 'historia 3',
                             onPressed: () {},
                           ),
                         ),
