@@ -1,8 +1,11 @@
 import 'package:application_supporting_the_management_of_shooting_competitions/pages/home_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const HomePage());
 }
 
 class MyApp extends StatelessWidget {
