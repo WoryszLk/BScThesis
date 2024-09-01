@@ -14,12 +14,24 @@ class MyAppView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Auth',
+      theme: ThemeData(
+        colorScheme: const ColorScheme.light(
+          background: Color(0xFF000000), // Czarny
+          onBackground: Colors.white,
+          primary: Color(0xFF1E88E5), // Niebieski
+          onPrimary: Colors.white,
+          secondary: Color(0xFF0D47A1), // Ciemniejszy niebieski
+          onSecondary: Colors.white,
+          tertiary: Color(0xFF2962FF), // Jasny niebieski
+          error: Colors.red,
+          outline: Color(0xFF424242)
+        ),
+      ),
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
-          if(state.status == AuthenticationStatus.authenticated) {
+          if (state.status == AuthenticationStatus.authenticated) {
             return const HomePage();
-          }
-          else {
+          } else {
             return const WelcomeScreen();
           }
         },
