@@ -17,7 +17,7 @@ class _PlayerListState extends State<PlayerList> {
   final TextEditingController _ageController = TextEditingController();
 
   final PlayerService _playerService = PlayerService();
-  Player? _editingPlayer;
+  PlayerWithId? _editingPlayer;
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +35,9 @@ class _PlayerListState extends State<PlayerList> {
               lastNameController: _lastNameController,
               ageController: _ageController,
               playerService: _playerService,
-              editingPlayer: _editingPlayer,
+              editingPlayer: _editingPlayer?.player,
               onClearForm: _clearForm,
+              onSavePlayer: _savePlayer,
             ),
             const SizedBox(height: 32.0),
             Expanded(
@@ -67,7 +68,7 @@ class _PlayerListState extends State<PlayerList> {
                                 IconButton(
                                   icon: const Icon(Icons.edit),
                                   onPressed: () {
-                                    _editPlayer(player);
+                                    _editPlayer(playerWithId);
                                   },
                                 ),
                                 IconButton(
@@ -100,13 +101,38 @@ class _PlayerListState extends State<PlayerList> {
     );
   }
 
-  void _editPlayer(Player player) {
+  // Funkcja do edycji zawodnika
+  void _editPlayer(PlayerWithId playerWithId) {
     setState(() {
-      _editingPlayer = player;
-      _firstNameController.text = player.firstName;
-      _lastNameController.text = player.lastName;
-      _ageController.text = player.age ?? '';
+      _editingPlayer = playerWithId;
+      _firstNameController.text = playerWithId.player.firstName;
+      _lastNameController.text = playerWithId.player.lastName;
+      _ageController.text = playerWithId.player.age ?? '';
     });
+  }
+
+  void _savePlayer() {
+    if (_formKey.currentState!.validate()) {
+      if (_editingPlayer == null) {
+        _playerService.addPlayer(
+          Player(
+            firstName: _firstNameController.text,
+            lastName: _lastNameController.text,
+            age: _ageController.text.isNotEmpty ? _ageController.text : null,
+          ),
+        );
+      } else {
+        _playerService.updatePlayer(
+          _editingPlayer!.id,
+          Player(
+            firstName: _firstNameController.text,
+            lastName: _lastNameController.text,
+            age: _ageController.text.isNotEmpty ? _ageController.text : null,
+          ),
+        );
+      }
+      _clearForm();
+    }
   }
 
   void _clearForm() {

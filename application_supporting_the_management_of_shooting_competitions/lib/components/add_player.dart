@@ -10,6 +10,7 @@ class AddPlayerForm extends StatelessWidget {
   final PlayerService playerService;
   final Player? editingPlayer;
   final VoidCallback onClearForm;
+  final VoidCallback onSavePlayer; // Nowy callback
 
   const AddPlayerForm({
     Key? key,
@@ -19,6 +20,7 @@ class AddPlayerForm extends StatelessWidget {
     required this.ageController,
     required this.playerService,
     required this.onClearForm,
+    required this.onSavePlayer, // Nowy callback
     this.editingPlayer,
   }) : super(key: key);
 
@@ -75,18 +77,7 @@ class AddPlayerForm extends StatelessWidget {
           ),
           const SizedBox(height: 32.0),
           ElevatedButton(
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                playerService.addPlayer(
-                  Player(
-                    firstName: firstNameController.text,
-                    lastName: lastNameController.text,
-                    age: ageController.text.isNotEmpty ? ageController.text : null,
-                  ),
-                );
-                onClearForm();
-              }
-            },
+            onPressed: onSavePlayer, // Zapisanie zawodnika
             child: Text(editingPlayer == null ? 'Dodaj zawodnika' : 'Zapisz zmiany'),
           ),
           if (editingPlayer != null)

@@ -17,6 +17,18 @@ class PlayerService {
     }
   }
 
+  Future<void> updatePlayer(String playerId, Player player) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('players')
+          .doc(playerId)
+          .update(player.toMap());
+    }
+  }
+
   Future<void> deletePlayer(String playerId) async {
     final user = _auth.currentUser;
     if (user != null) {
