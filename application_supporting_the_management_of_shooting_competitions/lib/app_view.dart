@@ -4,8 +4,6 @@ import 'package:application_supporting_the_management_of_shooting_competitions/p
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'blocs/sign_in_bloc/sign_in_bloc.dart';
-
 
 class MyAppView extends StatelessWidget {
   const MyAppView({super.key});
@@ -16,13 +14,13 @@ class MyAppView extends StatelessWidget {
       title: 'Auth',
       theme: ThemeData(
         colorScheme: const ColorScheme.light(
-          background: Color(0xFF000000), // Czarny
+          background: Color(0xFF000000),
           onBackground: Colors.white,
-          primary: Color(0xFF1E88E5), // Niebieski
+          primary: Color(0xFF1E88E5),
           onPrimary: Colors.white,
-          secondary: Color(0xFF0D47A1), // Ciemniejszy niebieski
+          secondary: Color(0xFF0D47A1), 
           onSecondary: Colors.white,
-          tertiary: Color(0xFF2962FF), // Jasny niebieski
+          tertiary: Color(0xFF2962FF),
           error: Colors.red,
           outline: Color(0xFF424242)
         ),

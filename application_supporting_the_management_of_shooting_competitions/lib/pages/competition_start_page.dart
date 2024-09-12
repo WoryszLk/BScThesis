@@ -1,3 +1,5 @@
+import 'package:application_supporting_the_management_of_shooting_competitions/pages/competition_rules_page.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/custom_button.dart';
 import 'competition_selector_page.dart';
@@ -53,10 +55,28 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     );
   }
 
-  void _startCompetition() {
-    // Logika przycisku Start
-    print('Competition Started');
+   void _navigateToRulesSelector() async {
+    if (_selectedCompetitionIndex != null) {
+      final selectedCompetition = _competitionNames[_selectedCompetitionIndex!];
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CompetitionRulesPage(selectedCompetition: selectedCompetition), 
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Wybierz najpierw zawody')),
+      );
+    }
   }
+
+  void _startCompetition() async{
+    await Navigator.push<int>(
+      context,
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );  
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -102,8 +122,10 @@ class _StarterCompetitionState extends State<StarterCompetition> {
                       width: double.infinity,
                       height: double.infinity,
                       imagePath: 'lib/images/buttonShooters.jpg',
-                      text: 'Tile 3',
-                      onPressed: () {},
+                      text: 'Zasady',
+                      onPressed: () {
+                        _navigateToRulesSelector();
+                      },
                     ),
                   ),
                   const SizedBox(height: 8),
