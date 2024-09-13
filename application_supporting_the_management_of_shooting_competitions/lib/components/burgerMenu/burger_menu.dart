@@ -93,6 +93,11 @@ class BurgerMenu extends StatelessWidget {
             title: Text('Historia zawodów'),
             onTap: () {},
           ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Wyloguj się'),
+            onTap: () {},
+          )
         ],
       ),
     );

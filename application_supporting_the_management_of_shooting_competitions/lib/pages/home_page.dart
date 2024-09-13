@@ -34,7 +34,6 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Wyświetlanie ostatnich zawodów
             Expanded(
               child: _buildRecentCompetitions(context),
             ),
