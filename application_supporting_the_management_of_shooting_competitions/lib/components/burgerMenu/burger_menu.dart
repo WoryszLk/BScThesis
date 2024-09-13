@@ -1,4 +1,5 @@
 import 'package:application_supporting_the_management_of_shooting_competitions/blocs/authentication_bloc/authentication_bloc.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/pages/competition_start_page.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/pages/player_list_selector_page.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +97,9 @@ class BurgerMenu extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Wyloguj się'),
-            onTap: () {},
+            onTap: () {
+              context.read<SignInBloc>().add(SignOutRequired());
+            },
           )
         ],
       ),
