@@ -1,3 +1,4 @@
+import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 import 'package:flutter/material.dart';
 
 const Map<String, List<String>> competitionRules = {
@@ -16,8 +17,13 @@ const Map<String, List<String>> competitionRules = {
 
 class CompetitionRulesPage extends StatelessWidget {
   final String selectedCompetition;
+  final List<PlayerWithId> selectedPlayers;
 
-  const CompetitionRulesPage({Key? key, required this.selectedCompetition}) : super(key: key);
+  const CompetitionRulesPage({
+    Key? key,
+    required this.selectedCompetition,
+    required this.selectedPlayers, // Przechwycenie wybranych zawodników
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,20 +33,40 @@ class CompetitionRulesPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Zasady zawodów: $selectedCompetition'),
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(8.0),
-        itemCount: rules.length,
-        itemBuilder: (context, index) {
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                rules[index],
-                style: const TextStyle(fontSize: 16),
-              ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(8.0),
+              itemCount: rules.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      rules[index],
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+          const Divider(),
+          // Wyświetlanie wybranych zawodników
+          Expanded(
+            child: ListView.builder(
+              itemCount: selectedPlayers.length,
+              itemBuilder: (context, index) {
+                final player = selectedPlayers[index].player;
+                return ListTile(
+                  title: Text('${player.firstName} ${player.lastName}'),
+                  subtitle: Text(player.age != null ? 'Wiek: ${player.age}' : 'Wiek: nie podano'),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

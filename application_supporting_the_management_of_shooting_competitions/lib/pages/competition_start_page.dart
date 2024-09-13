@@ -1,9 +1,11 @@
+import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_service.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_list_selector.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/pages/competition_rules_page.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/custom_button.dart';
 import 'competition_selector_page.dart';
-import 'player_list_selector_page.dart';
 
 class StarterCompetition extends StatefulWidget {
   const StarterCompetition({super.key});
@@ -14,6 +16,8 @@ class StarterCompetition extends StatefulWidget {
 
 class _StarterCompetitionState extends State<StarterCompetition> {
   int? _selectedCompetitionIndex;
+  List<PlayerWithId> _selectedPlayers = []; // Przechowywanie wybranych zawodników
+  final CompetitionService _competitionService = CompetitionService();
 
   final List<String> _competitionNames = [
     'FBI',
@@ -49,19 +53,28 @@ class _StarterCompetitionState extends State<StarterCompetition> {
   }
 
   void _navigateToPlayersSelector() async {
-    await Navigator.push<int>(
+    final selectedPlayers = await Navigator.push<List<PlayerWithId>>(
       context,
-      MaterialPageRoute(builder: (context) => const PlayerList()),
+      MaterialPageRoute(builder: (context) => const PlayerListSelector()),
     );
+
+    if (selectedPlayers != null) {
+      setState(() {
+        _selectedPlayers = selectedPlayers;
+      });
+    }
   }
 
-   void _navigateToRulesSelector() async {
+  void _navigateToRulesSelector() async {
     if (_selectedCompetitionIndex != null) {
       final selectedCompetition = _competitionNames[_selectedCompetitionIndex!];
       await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CompetitionRulesPage(selectedCompetition: selectedCompetition), 
+          builder: (context) => CompetitionRulesPage(
+            selectedCompetition: selectedCompetition,
+            selectedPlayers: _selectedPlayers,
+          ),
         ),
       );
     } else {
@@ -71,12 +84,26 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
-  void _startCompetition() async{
-    await Navigator.push<int>(
-      context,
-      MaterialPageRoute(builder: (context) => const HomePage()),
-    );  
+  void _startCompetition() async {
+    if (_selectedCompetitionIndex != null && _selectedPlayers.isNotEmpty) {
+      final selectedCompetition = _competitionNames[_selectedCompetitionIndex!];
+
+      await _competitionService.addCompetition(
+        competitionType: selectedCompetition,
+        players: _selectedPlayers,
+        startDate: DateTime.now(),
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Wybierz typ zawodów i zawodników')),
+      );
     }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,15 +150,12 @@ class _StarterCompetitionState extends State<StarterCompetition> {
                       height: double.infinity,
                       imagePath: 'lib/images/buttonShooters.jpg',
                       text: 'Zasady',
-                      onPressed: () {
-                        _navigateToRulesSelector();
-                      },
+                      onPressed: _navigateToRulesSelector,
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Zmniejszenie szerokości przycisku "Start"
                   SizedBox(
-                    height: 100, // Ustawienie wysokości na bardziej kompaktową
+                    height: 100,
                     child: CustomButton(
                       width: double.infinity,
                       height: double.infinity,

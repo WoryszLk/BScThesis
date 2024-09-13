@@ -20,7 +20,7 @@ class AddPlayerForm extends StatelessWidget {
     required this.ageController,
     required this.playerService,
     required this.onClearForm,
-    required this.onSavePlayer, // Nowy callback
+    required this.onSavePlayer,
     this.editingPlayer,
   }) : super(key: key);
 

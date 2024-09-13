@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:application_supporting_the_management_of_shooting_competitions/components/player.dart';
-import 'package:application_supporting_the_management_of_shooting_competitions/components/add_player.dart';
-import 'package:application_supporting_the_management_of_shooting_competitions/components/player_service.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/players/add_player.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 
 class PlayerList extends StatefulWidget {
   const PlayerList({Key? key}) : super(key: key);
