@@ -18,12 +18,12 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
 
   final PlayerService _playerService = PlayerService();
   PlayerWithId? _editingPlayer;
-  List<PlayerWithId> _selectedPlayers = []; // Zresetowanie wybranych zawodników przy każdym otwarciu
+  List<PlayerWithId> _selectedPlayers = []; // Lokalna lista zawodników
 
   @override
   void initState() {
     super.initState();
-    _selectedPlayers = []; // Czyszczenie listy zawodników przy otwarciu
+    _selectedPlayers = []; // Resetowanie listy zawodników przy otwarciu
   }
 
   @override
@@ -49,74 +49,62 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
             ),
             const SizedBox(height: 32.0),
             Expanded(
-              child: StreamBuilder<List<PlayerWithId>>(
-                stream: _playerService.getPlayers(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final playersWithIds = snapshot.data!;
-                    return ListView.builder(
-                      itemCount: playersWithIds.length,
-                      itemBuilder: (context, index) {
-                        final playerWithId = playersWithIds[index];
-                        final player = playerWithId.player;
-                        final isSelected = _selectedPlayers.contains(playerWithId);
+              // Wyświetlanie lokalnej listy zawodników
+              child: ListView.builder(
+                itemCount: _selectedPlayers.length,
+                itemBuilder: (context, index) {
+                  final playerWithId = _selectedPlayers[index];
+                  final player = playerWithId.player;
+                  final isSelected = _selectedPlayers.contains(playerWithId);
 
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            side: const BorderSide(color: Colors.grey, width: 1.0),
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      side: const BorderSide(color: Colors.grey, width: 1.0),
+                    ),
+                    child: ListTile(
+                      title: Text('${player.firstName} ${player.lastName}'),
+                      subtitle: player.age != null
+                          ? Text('Wiek: ${player.age}')
+                          : const Text('Wiek: nie podano'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Edycja zawodnika
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              _editPlayer(playerWithId);
+                            },
                           ),
-                          child: ListTile(
-                            title: Text('${player.firstName} ${player.lastName}'),
-                            subtitle: player.age != null
-                                ? Text('Wiek: ${player.age}')
-                                : const Text('Wiek: nie podano'),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                // Edycja zawodnika
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  onPressed: () {
-                                    _editPlayer(playerWithId);
-                                  },
-                                ),
-                                // Usunicie zawodnika
-                                IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  onPressed: () {
-                                    _playerService.deletePlayer(playerWithId.id);
-                                  },
-                                ),
-                                // Wybieranie zawodnika
-                                Checkbox(
-                                  value: isSelected,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      if (value == true) {
-                                        _selectedPlayers.add(playerWithId);
-                                      } else {
-                                        _selectedPlayers.remove(playerWithId);
-                                      }
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
+                          // Usuniecie zawodnika
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              setState(() {
+                                _selectedPlayers.remove(playerWithId);
+                                _playerService.deletePlayer(playerWithId.id);
+                              });
+                            },
                           ),
-                        );
-                      },
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Wystąpił błąd: ${snapshot.error}'),
-                    );
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
+                          // Wybieranie zawodnika
+                          Checkbox(
+                            value: isSelected,
+                            onChanged: (value) {
+                              setState(() {
+                                if (value == true) {
+                                  _selectedPlayers.add(playerWithId);
+                                } else {
+                                  _selectedPlayers.remove(playerWithId);
+                                }
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
                 },
               ),
             ),
@@ -125,7 +113,7 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pop(context, _selectedPlayers); // Zwracamy wybranych zawodników
+          Navigator.pop(context, _selectedPlayers);
         },
         child: const Icon(Icons.done),
       ),
@@ -142,32 +130,40 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
     });
   }
 
-  // Funkcja do zapisu lub aktualizacji zawodnika
-  void _savePlayer() {
-    if (_formKey.currentState!.validate()) {
-      if (_editingPlayer == null) {
-        _playerService.addPlayer(
-          Player(
-            firstName: _firstNameController.text,
-            lastName: _lastNameController.text,
-            age: _ageController.text.isNotEmpty ? _ageController.text : null,
-          ),
-        );
-      } else {
-        _playerService.updatePlayer(
-          _editingPlayer!.id,
-          Player(
-            firstName: _firstNameController.text,
-            lastName: _lastNameController.text,
-            age: _ageController.text.isNotEmpty ? _ageController.text : null,
-          ),
-        );
-      }
-      _clearForm();
-    }
-  }
+Future<void> _savePlayer() async {
+  if (_formKey.currentState!.validate()) {
+    if (_editingPlayer == null) {
+      // Tworzenie nowego zawodnika i zapisanie go w bazie
+      final newPlayer = Player(
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        age: _ageController.text.isNotEmpty ? _ageController.text : null,
+      );
+      
+      await _playerService.addPlayer(newPlayer); // Zapis w bazie
 
-  // Funkcja do czyszczenia formularza
+      // Dodanie nowego zawodnika do lokalnej listy po zapisie w bazie
+      setState(() {
+        _selectedPlayers.add(PlayerWithId(id: 'temp-id', player: newPlayer)); 
+        // Używamy tymczasowego ID, ponieważ addPlayer nie zwraca ID wprost
+      });
+
+    } else {
+      // Aktualizacja istniejącego zawodnika
+      await _playerService.updatePlayer(
+        _editingPlayer!.id,
+        Player(
+          firstName: _firstNameController.text,
+          lastName: _lastNameController.text,
+          age: _ageController.text.isNotEmpty ? _ageController.text : null,
+        ),
+      );
+    }
+    _clearForm();
+  }
+}
+
+  // Czyszczenie formularza po zapisaniu
   void _clearForm() {
     _firstNameController.clear();
     _lastNameController.clear();

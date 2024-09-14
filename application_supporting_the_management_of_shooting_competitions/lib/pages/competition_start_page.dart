@@ -16,7 +16,7 @@ class StarterCompetition extends StatefulWidget {
 
 class _StarterCompetitionState extends State<StarterCompetition> {
   int? _selectedCompetitionIndex;
-  List<PlayerWithId> _selectedPlayers = []; // Przechowywanie wybranych zawodników
+  List<PlayerWithId> _selectedPlayers = []; // Przechowywanie lokalne wybranych zawodników
   final CompetitionService _competitionService = CompetitionService();
 
   final List<String> _competitionNames = [
@@ -36,13 +36,6 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     'lib/images/top_gun.jpg',
     'lib/images/btg.jpg',
   ];
-
-  // Resetowanie listy zawodników przy otwarciu widoku
-  @override
-  void initState() {
-    super.initState();
-    _selectedPlayers = []; // Czyszczenie listy zawodników przy otwarciu ekranu
-  }
 
   // Przejście do ekranu wyboru zawodów
   void _navigateToCompetitionSelector() async {
@@ -74,7 +67,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
-  // Przejście do ekranu zasad zawodów
+  // Wyświetlenie zasad dla wybranych zawodów
   void _navigateToRulesSelector() async {
     if (_selectedCompetitionIndex != null) {
       final selectedCompetition = _competitionNames[_selectedCompetitionIndex!];
@@ -94,7 +87,6 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
-  // Rozpoczęcie zawodów i czyszczenie listy zawodników po starcie
   void _startCompetition() async {
     if (_selectedCompetitionIndex != null && _selectedPlayers.isNotEmpty) {
       final selectedCompetition = _competitionNames[_selectedCompetitionIndex!];
@@ -106,7 +98,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
       );
 
       setState(() {
-        _selectedPlayers = []; // Czyszczenie zawodników po starcie zawodów
+        _selectedPlayers = [];
       });
 
       Navigator.push(
@@ -121,10 +113,16 @@ class _StarterCompetitionState extends State<StarterCompetition> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _selectedPlayers = [];
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('App'),
+        title: const Text('Rozpocznij zawody'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
