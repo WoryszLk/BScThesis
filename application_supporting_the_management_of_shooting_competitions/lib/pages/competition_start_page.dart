@@ -1,8 +1,8 @@
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_service.dart';
-import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_list_selector.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/pages/competition_rules_page.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/pages/home_page.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/pages/player_list_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/custom_button.dart';
 import 'competition_selector_page.dart';

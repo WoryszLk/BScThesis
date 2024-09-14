@@ -3,14 +3,14 @@ import 'package:application_supporting_the_management_of_shooting_competitions/c
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/add_player.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 
-class PlayerList extends StatefulWidget {
-  const PlayerList({Key? key}) : super(key: key);
+class PlayerListSelector extends StatefulWidget {
+  const PlayerListSelector({Key? key}) : super(key: key);
 
   @override
-  _PlayerListState createState() => _PlayerListState();
+  _PlayerListSelectorState createState() => _PlayerListSelectorState();
 }
 
-class _PlayerListState extends State<PlayerList> {
+class _PlayerListSelectorState extends State<PlayerListSelector> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -18,17 +18,19 @@ class _PlayerListState extends State<PlayerList> {
 
   final PlayerService _playerService = PlayerService();
   PlayerWithId? _editingPlayer;
+  final List<PlayerWithId> _selectedPlayers = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Player List'),
+        title: const Text('Zarządzaj zawodnikami'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Formularz dodawania/edycji zawodnika
             AddPlayerForm(
               formKey: _formKey,
               firstNameController: _firstNameController,
@@ -51,6 +53,8 @@ class _PlayerListState extends State<PlayerList> {
                       itemBuilder: (context, index) {
                         final playerWithId = playersWithIds[index];
                         final player = playerWithId.player;
+                        final isSelected = _selectedPlayers.contains(playerWithId);
+
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8.0),
                           shape: RoundedRectangleBorder(
@@ -65,16 +69,31 @@ class _PlayerListState extends State<PlayerList> {
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
+                                // Edycja zawodnika
                                 IconButton(
                                   icon: const Icon(Icons.edit),
                                   onPressed: () {
                                     _editPlayer(playerWithId);
                                   },
                                 ),
+                                // Usunicie zawodnika
                                 IconButton(
                                   icon: const Icon(Icons.delete),
                                   onPressed: () {
                                     _playerService.deletePlayer(playerWithId.id);
+                                  },
+                                ),
+                                // Wybieranie zawodnika
+                                Checkbox(
+                                  value: isSelected,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      if (value == true) {
+                                        _selectedPlayers.add(playerWithId);
+                                      } else {
+                                        _selectedPlayers.remove(playerWithId);
+                                      }
+                                    });
                                   },
                                 ),
                               ],
@@ -98,6 +117,12 @@ class _PlayerListState extends State<PlayerList> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context, _selectedPlayers);
+        },
+        child: const Icon(Icons.done),
+      ),
     );
   }
 
@@ -111,6 +136,7 @@ class _PlayerListState extends State<PlayerList> {
     });
   }
 
+  // Funkcja do zapisu lub aktualizacji zawodnika
   void _savePlayer() {
     if (_formKey.currentState!.validate()) {
       if (_editingPlayer == null) {
@@ -135,6 +161,7 @@ class _PlayerListState extends State<PlayerList> {
     }
   }
 
+  // Funkcja do czyszczenia formularza
   void _clearForm() {
     _firstNameController.clear();
     _lastNameController.clear();
