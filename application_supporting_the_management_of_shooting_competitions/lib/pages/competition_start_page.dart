@@ -94,6 +94,10 @@ class _StarterCompetitionState extends State<StarterCompetition> {
         startDate: DateTime.now(),
       );
 
+      setState(() {
+        _selectedPlayers = [];
+      });
+      
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
