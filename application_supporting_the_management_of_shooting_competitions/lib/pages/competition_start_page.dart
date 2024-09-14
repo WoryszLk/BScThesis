@@ -37,6 +37,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     'lib/images/btg.jpg',
   ];
 
+  // Przejście do ekranu wyboru zawodów
   void _navigateToCompetitionSelector() async {
     final selectedIndex = await Navigator.push<int>(
       context,
@@ -52,6 +53,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
+  // Dodanie zawodników do bieżących zawodów
   void _navigateToPlayersSelector() async {
     final selectedPlayers = await Navigator.push<List<PlayerWithId>>(
       context,
@@ -65,6 +67,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
+  // Przejście do widoku zasad zawodów
   void _navigateToRulesSelector() async {
     if (_selectedCompetitionIndex != null) {
       final selectedCompetition = _competitionNames[_selectedCompetitionIndex!];
@@ -84,6 +87,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
+  // Rozpoczęcie zawodów, zapisanie i czyszczenie listy zawodników
   void _startCompetition() async {
     if (_selectedCompetitionIndex != null && _selectedPlayers.isNotEmpty) {
       final selectedCompetition = _competitionNames[_selectedCompetitionIndex!];
@@ -95,9 +99,9 @@ class _StarterCompetitionState extends State<StarterCompetition> {
       );
 
       setState(() {
-        _selectedPlayers = [];
+        _selectedPlayers = []; // Czyszczenie zawodników po starcie zawodów
       });
-      
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
@@ -110,12 +114,12 @@ class _StarterCompetitionState extends State<StarterCompetition> {
   }
 
   @override
-  void initState()
-  {
+  void initState() {
     super.initState();
-    _selectedPlayers = [];
+    _selectedPlayers = []; // Czyszczenie listy zawodników przy otwarciu ekranu
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
