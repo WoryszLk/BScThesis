@@ -37,6 +37,13 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     'lib/images/btg.jpg',
   ];
 
+  // Resetowanie listy zawodników przy otwarciu widoku
+  @override
+  void initState() {
+    super.initState();
+    _selectedPlayers = []; // Czyszczenie listy zawodników przy otwarciu ekranu
+  }
+
   // Przejście do ekranu wyboru zawodów
   void _navigateToCompetitionSelector() async {
     final selectedIndex = await Navigator.push<int>(
@@ -53,7 +60,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
-  // Dodanie zawodników do bieżących zawodów
+  // Przejście do ekranu wyboru zawodników
   void _navigateToPlayersSelector() async {
     final selectedPlayers = await Navigator.push<List<PlayerWithId>>(
       context,
@@ -67,7 +74,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
-  // Przejście do widoku zasad zawodów
+  // Przejście do ekranu zasad zawodów
   void _navigateToRulesSelector() async {
     if (_selectedCompetitionIndex != null) {
       final selectedCompetition = _competitionNames[_selectedCompetitionIndex!];
@@ -87,7 +94,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
-  // Rozpoczęcie zawodów, zapisanie i czyszczenie listy zawodników
+  // Rozpoczęcie zawodów i czyszczenie listy zawodników po starcie
   void _startCompetition() async {
     if (_selectedCompetitionIndex != null && _selectedPlayers.isNotEmpty) {
       final selectedCompetition = _competitionNames[_selectedCompetitionIndex!];
@@ -111,12 +118,6 @@ class _StarterCompetitionState extends State<StarterCompetition> {
         const SnackBar(content: Text('Wybierz typ zawodów i zawodników')),
       );
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedPlayers = []; // Czyszczenie listy zawodników przy otwarciu ekranu
   }
 
   @override

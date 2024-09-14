@@ -18,7 +18,13 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
 
   final PlayerService _playerService = PlayerService();
   PlayerWithId? _editingPlayer;
-  final List<PlayerWithId> _selectedPlayers = [];
+  List<PlayerWithId> _selectedPlayers = []; // Zresetowanie wybranych zawodników przy każdym otwarciu
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPlayers = []; // Czyszczenie listy zawodników przy otwarciu
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +125,7 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pop(context, _selectedPlayers);
+          Navigator.pop(context, _selectedPlayers); // Zwracamy wybranych zawodników
         },
         child: const Icon(Icons.done),
       ),
