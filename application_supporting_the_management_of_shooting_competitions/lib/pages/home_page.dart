@@ -1,6 +1,5 @@
 import 'package:application_supporting_the_management_of_shooting_competitions/components/burgerMenu/burger_menu.dart';
-import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_details.dart';
-import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_service.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_history.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/pages/competition_start_page.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +18,7 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Karta do rozpoczęcia zawodów
             _buildMainOptionCard(
               context,
               'Rozpocznij zawody',
@@ -34,51 +34,19 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
+            // Zamiast tworzyć logikę tutaj, załaduj ją z pliku `competition_history_page.dart`
             Expanded(
-              child: _buildRecentCompetitions(context),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: const [
+                    CompetitionHistory(),  // Używamy nowej klasy CompetitionHistory
+                  ],
+                ),
+              ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  // Funkcja budująca widok ostatnich zawodów
-  Widget _buildRecentCompetitions(BuildContext context) {
-    final CompetitionService competitionService = CompetitionService();
-
-    return StreamBuilder<List<CompetitionWithId>>(
-      stream: competitionService.getCompetitions(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final competitions = snapshot.data!.take(5).toList();
-          return ListView.builder(
-            itemCount: competitions.length,
-            itemBuilder: (context, index) {
-              final competition = competitions[index].competition;
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CompetitionDetailsPage(competitionWithId: competitions[index]),
-                    ),
-                  );
-                },
-                child: _buildCompetitionHistoryCard(
-                  competition.competitionType,
-                  competition.startDate.toLocal().toString().split(' ')[0],
-                  'Zakończone', // DO zmiany - > dynamiczny status
-                ),
-              );
-            },
-          );
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Błąd: ${snapshot.error}'));
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
     );
   }
 
@@ -90,8 +58,8 @@ class HomePage extends StatelessWidget {
         }
       },
       child: Container(
-        width: double.infinity,  // Szerokość na cały ekran
-        height: 200, // Wysokość większa niż zwykłe karty
+        width: double.infinity,
+        height: 200,  // Wysokość większa niż zwykłe karty
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -101,7 +69,7 @@ class HomePage extends StatelessWidget {
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
           image: imagePath != null
@@ -128,43 +96,6 @@ class HomePage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildCompetitionHistoryCard(String title, String date, String status) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                date,
-                style: TextStyle(color: Colors.grey.shade600),
-              ),
-            ],
-          ),
-          Text(
-            status,
-            style: TextStyle(
-              color: status == 'Zakończone' ? Colors.green : Colors.orange,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
       ),
     );
   }
