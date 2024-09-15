@@ -18,10 +18,10 @@ class CompetitionHistory extends StatelessWidget {
       stream: competitionService.getCompetitions(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final competitions = snapshot.data!.take(5).toList();  // Wyświetlamy ostatnie 5 zawodów
+          final competitions = snapshot.data!.take(5).toList();
           return ListView.builder(
-            shrinkWrap: true,  // Dostosowanie do przestrzeni
-            physics: const NeverScrollableScrollPhysics(),  // Wyłączenie przewijania (zarządzanie przewijaniem jest w głównym widoku)
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: competitions.length,
             itemBuilder: (context, index) {
               final competition = competitions[index].competition;

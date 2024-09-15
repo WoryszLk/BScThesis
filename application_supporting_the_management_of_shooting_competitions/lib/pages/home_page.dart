@@ -1,5 +1,6 @@
 import 'package:application_supporting_the_management_of_shooting_competitions/components/burgerMenu/burger_menu.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_history.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/horizontalMenu/horizontal_button_list.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/pages/competition_start_page.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: burgerMenu.buildAppBar(context),
       drawer: burgerMenu, 
-      body: Padding(
+      body: SingleChildScrollView(  // Dodanie przewijania na całe body
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,18 +33,19 @@ class HomePage extends StatelessWidget {
               'Wybierz opcję',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
+
+            // Lista przycisków przewijanych poziomo
+            const HorizontalButtonList(),
+            const SizedBox(height: 16), // Dodaj trochę miejsca
+
+            const Text(
+              'Historia',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 16),
 
-            // Zamiast tworzyć logikę tutaj, załaduj ją z pliku `competition_history_page.dart`
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: const [
-                    CompetitionHistory(),  // Używamy nowej klasy CompetitionHistory
-                  ],
-                ),
-              ),
-            ),
+            // Wyświetlanie historii zawodów
+            const CompetitionHistory(),
           ],
         ),
       ),
