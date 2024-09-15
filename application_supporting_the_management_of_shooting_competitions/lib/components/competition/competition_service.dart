@@ -25,7 +25,13 @@ class CompetitionService {
   Stream<List<CompetitionWithId>> getCompetitions() {
     final user = _auth.currentUser;
     if (user != null) {
-      return _firestore.collection('users').doc(user.uid).collection('competitions').snapshots().map((snapshot) {
+      return _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('competitions')
+          .orderBy('startDate', descending: true)
+          .snapshots()
+          .map((snapshot) {
         return snapshot.docs.map((doc) {
           return CompetitionWithId(
             id: doc.id,
