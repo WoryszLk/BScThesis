@@ -8,24 +8,3 @@ const Map <String, List <String>> competitionRules = {
     'Zadanie 2: 4,6 m - 12 strzałów (2 magazynki)',
   ],
 };
-
-class CompetitionScorePage extends StatefulWidget {
-  final String selectedCompetition;
-  final List<PlayerWithId> selectedPlayers;
-
-  const CompetitionScorePage({
-    Key? key,
-    required this.selectedCompetition,
-    required this.selectedPlayers,
-    }) : super(key: key);
-
-  @override
-  State<CompetitionScorePage> createState() => _CompetitionScorePageState();
-}
-
-class _CompetitionScorePageState extends State<CompetitionScorePage> {
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
