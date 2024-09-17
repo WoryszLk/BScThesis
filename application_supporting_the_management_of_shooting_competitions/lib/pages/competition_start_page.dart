@@ -57,7 +57,9 @@ class _StarterCompetitionState extends State<StarterCompetition> {
   void _navigateToPlayersSelector() async {
     final selectedPlayers = await Navigator.push<List<PlayerWithId>>(
       context,
-      MaterialPageRoute(builder: (context) => const PlayerListSelector()),
+      MaterialPageRoute(builder: (context) => PlayerListSelector(
+        selectedPlayers: _selectedPlayers, // Przekazanie aktualnie wybranych zawodników
+      )),
     );
 
     if (selectedPlayers != null) {
@@ -98,7 +100,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
       );
 
       setState(() {
-        _selectedPlayers = [];
+        _selectedPlayers = [];  // Czyszczenie listy zawodników po rozpoczęciu zawodów
       });
 
       Navigator.push(

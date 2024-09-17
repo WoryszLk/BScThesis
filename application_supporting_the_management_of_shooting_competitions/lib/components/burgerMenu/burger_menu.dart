@@ -82,13 +82,7 @@ class BurgerMenu extends StatelessWidget {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const StarterCompetition()));
             },
           ),
-          ListTile(
-            leading: Icon(Icons.people),
-            title: Text('Lista zawodników'),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const PlayerListSelector()));
-            },
-          ),
+
           ListTile(
             leading: Icon(Icons.history),
             title: Text('Historia zawodów'),

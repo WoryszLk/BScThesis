@@ -4,7 +4,8 @@ import 'package:application_supporting_the_management_of_shooting_competitions/c
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 
 class PlayerListSelector extends StatefulWidget {
-  const PlayerListSelector({Key? key}) : super(key: key);
+  final List<PlayerWithId> selectedPlayers; 
+  const PlayerListSelector({Key? key, required this.selectedPlayers}) : super(key: key);
 
   @override
   _PlayerListSelectorState createState() => _PlayerListSelectorState();
@@ -18,12 +19,12 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
 
   final PlayerService _playerService = PlayerService();
   PlayerWithId? _editingPlayer;
-  List<PlayerWithId> _selectedPlayers = []; // Lokalna lista zawodników
+  late List<PlayerWithId> _localSelectedPlayers;
 
   @override
   void initState() {
     super.initState();
-    _selectedPlayers = []; // Resetowanie listy zawodników przy otwarciu
+    _localSelectedPlayers = List.from(widget.selectedPlayers);
   }
 
   @override
@@ -51,11 +52,11 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
             Expanded(
               // Wyświetlanie lokalnej listy zawodników
               child: ListView.builder(
-                itemCount: _selectedPlayers.length,
+                itemCount: _localSelectedPlayers.length,
                 itemBuilder: (context, index) {
-                  final playerWithId = _selectedPlayers[index];
+                  final playerWithId = _localSelectedPlayers[index];
                   final player = playerWithId.player;
-                  final isSelected = _selectedPlayers.contains(playerWithId);
+                  final isSelected = _localSelectedPlayers.contains(playerWithId);
 
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -83,8 +84,7 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
                             icon: const Icon(Icons.delete),
                             onPressed: () {
                               setState(() {
-                                _selectedPlayers.remove(playerWithId);
-                                _playerService.deletePlayer(playerWithId.id);
+                                _localSelectedPlayers.remove(playerWithId);
                               });
                             },
                           ),
@@ -94,9 +94,9 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
                             onChanged: (value) {
                               setState(() {
                                 if (value == true) {
-                                  _selectedPlayers.add(playerWithId);
+                                  _localSelectedPlayers.add(playerWithId);
                                 } else {
-                                  _selectedPlayers.remove(playerWithId);
+                                  _localSelectedPlayers.remove(playerWithId);
                                 }
                               });
                             },
@@ -113,7 +113,7 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pop(context, _selectedPlayers);
+          Navigator.pop(context, _localSelectedPlayers);
         },
         child: const Icon(Icons.done),
       ),
@@ -130,40 +130,29 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
     });
   }
 
-Future<void> _savePlayer() async {
-  if (_formKey.currentState!.validate()) {
-    if (_editingPlayer == null) {
-      // Tworzenie nowego zawodnika i zapisanie go w bazie
-      final newPlayer = Player(
-        firstName: _firstNameController.text,
-        lastName: _lastNameController.text,
-        age: _ageController.text.isNotEmpty ? _ageController.text : null,
-      );
-      
-      await _playerService.addPlayer(newPlayer); // Zapis w bazie
-
-      // Dodanie nowego zawodnika do lokalnej listy po zapisie w bazie
-      setState(() {
-        _selectedPlayers.add(PlayerWithId(id: 'temp-id', player: newPlayer)); 
-        // Używamy tymczasowego ID, ponieważ addPlayer nie zwraca ID wprost
-      });
-
-    } else {
-      // Aktualizacja istniejącego zawodnika
-      await _playerService.updatePlayer(
-        _editingPlayer!.id,
-        Player(
+  // Funkcja do zapisywania zawodników
+  Future<void> _savePlayer() async {
+    if (_formKey.currentState!.validate()) {
+      if (_editingPlayer == null) {
+        // Tworzenie nowego zawodnika
+        final newPlayer = Player(
           firstName: _firstNameController.text,
           lastName: _lastNameController.text,
           age: _ageController.text.isNotEmpty ? _ageController.text : null,
-        ),
-      );
-    }
-    _clearForm();
-  }
-}
+        );
 
-  // Czyszczenie formularza po zapisaniu
+        setState(() {
+          // Dodanie do lokalnej listy
+          _localSelectedPlayers.add(PlayerWithId(id: 'temp-id', player: newPlayer));
+        });
+
+      } else {
+        // Logika aktualizacji zawodnika
+      }
+      _clearForm();
+    }
+  }
+
   void _clearForm() {
     _firstNameController.clear();
     _lastNameController.clear();
