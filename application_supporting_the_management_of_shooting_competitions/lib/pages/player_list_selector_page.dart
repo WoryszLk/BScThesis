@@ -4,7 +4,8 @@ import 'package:application_supporting_the_management_of_shooting_competitions/c
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 
 class PlayerListSelector extends StatefulWidget {
-  final List<PlayerWithId> selectedPlayers; 
+  final List<PlayerWithId> selectedPlayers;
+
   const PlayerListSelector({Key? key, required this.selectedPlayers}) : super(key: key);
 
   @override
@@ -120,7 +121,7 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
     );
   }
 
-  // Funkcja do edycji zawodnika
+// Funkcja do edycji zawodnika
   void _editPlayer(PlayerWithId playerWithId) {
     setState(() {
       _editingPlayer = playerWithId;
@@ -130,7 +131,7 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
     });
   }
 
-  // Funkcja do zapisywania zawodników
+// Funkcja do zapisywania zawodników
   Future<void> _savePlayer() async {
     if (_formKey.currentState!.validate()) {
       if (_editingPlayer == null) {
@@ -145,9 +146,20 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
           // Dodanie do lokalnej listy
           _localSelectedPlayers.add(PlayerWithId(id: 'temp-id', player: newPlayer));
         });
-
       } else {
-        // Logika aktualizacji zawodnika
+        setState(() {
+          final index = _localSelectedPlayers.indexWhere((p) => p.id == _editingPlayer!.id);
+          if (index != -1) {
+            _localSelectedPlayers[index] = PlayerWithId(
+              id: _editingPlayer!.id,
+              player: Player(
+                firstName: _firstNameController.text,
+                lastName: _lastNameController.text,
+                age: _ageController.text.isNotEmpty ? _ageController.text : null,
+              ),
+            );
+          }
+        });
       }
       _clearForm();
     }
