@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Wyświetlanie historii zawodów
-            const CompetitionHistory(),
+             CompetitionHistory(),
           ],
         ),
       ),

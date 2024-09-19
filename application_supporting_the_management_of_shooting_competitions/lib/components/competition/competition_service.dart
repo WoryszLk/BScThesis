@@ -1,12 +1,11 @@
-import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competitionScores/competition_score_FBI.dart';
-import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player.dart';
-import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player.dart';
 
 class CompetitionService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance; 
 
   Future<void> addCompetition({
     required String competitionType,
@@ -15,30 +14,19 @@ class CompetitionService {
   }) async {
     final user = _auth.currentUser;
     if (user != null) {
-      await _firestore.collection('users').doc(user.uid).collection('competitions').add({
+      await firestore.collection('users').doc(user.uid).collection('competitions').add({
         'competitionType': competitionType,
         'startDate': startDate,
         'players': players.map((playerWithId) => playerWithId.player.toMap()).toList(),
+        'status': 'Ongoing', // Dodanie statusu zawodów
       });
     }
   }
 
-  Future<void> savePlayerScores(String competitionId, List<PlayerScoreFBI> scores) async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      final competitionDoc = _firestore.collection('users').doc(user.uid).collection('competitions').doc(competitionId);
-      
-      for (var score in scores) {
-        await competitionDoc.collection('scores').doc(score.playerId).set(score.toMap());
-      }
-    }
-  }
-
-  // Pobieranie wszystkich zawodów
   Stream<List<CompetitionWithId>> getCompetitions() {
     final user = _auth.currentUser;
     if (user != null) {
-      return _firestore
+      return firestore
           .collection('users')
           .doc(user.uid)
           .collection('competitions')
@@ -55,8 +43,41 @@ class CompetitionService {
     }
     return const Stream.empty();
   }
+
+  /// Zapis punktów zawodników do Firestore
+  Future<void> savePlayerScores(String competitionId, List<dynamic> playerScores) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final competitionRef = firestore.collection('users').doc(user.uid).collection('competitions').doc(competitionId);
+
+      await competitionRef.update({
+        'scores': playerScores.map((score) => score.toMap()).toList(), // Mapowanie wyników na format JSON
+      }).then((_) {
+        print('Wyniki zawodników zapisane pomyślnie');
+      }).catchError((error) {
+        print('Błąd podczas zapisywania wyników zawodników: $error');
+      });
+    }
+  }
+
+  /// Zakończenie zawodów (zmiana statusu na "Zakończone")
+  Future<void> endCompetition(String competitionId) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final competitionRef = firestore.collection('users').doc(user.uid).collection('competitions').doc(competitionId);
+
+      await competitionRef.update({
+        'status': 'Zakończone',
+      }).then((_) {
+        print('Zawody zakończone pomyślnie');
+      }).catchError((error) {
+        print('Błąd podczas kończenia zawodów: $error');
+      });
+    }
+  }
 }
 
+/// Klasa do zarządzania zawodami wraz z ich unikalnym identyfikatorem
 class CompetitionWithId {
   final String id;
   final Competition competition;
@@ -67,30 +88,37 @@ class CompetitionWithId {
   });
 }
 
+/// Klasa zawodów (główna struktura)
 class Competition {
   final String competitionType;
   final DateTime startDate;
   final List<Player> players;
+  final String status;
 
   Competition({
     required this.competitionType,
     required this.startDate,
     required this.players,
+    this.status = 'Ongoing',
   });
 
+  /// Konwersja obiektu Competition na Map (do zapisu w Firestore)
   Map<String, dynamic> toMap() {
     return {
       'competitionType': competitionType,
       'startDate': startDate.toIso8601String(),
       'players': players.map((player) => player.toMap()).toList(),
+      'status': status,
     };
   }
 
+  /// Tworzenie obiektu Competition z Mapy (do odczytu z Firestore)
   factory Competition.fromMap(Map<String, dynamic> map) {
-  return Competition(
-    competitionType: map['competitionType'] ?? 'Nieznany typ',
-    startDate: (map['startDate'] as Timestamp).toDate(),
-    players: (map['players'] as List<dynamic>).map((item) => Player.fromMap(item as Map<String, dynamic>)).toList(),
-  );
-}
+    return Competition(
+      competitionType: map['competitionType'] ?? '',
+      startDate: (map['startDate'] as Timestamp).toDate(),
+      players: (map['players'] as List<dynamic>).map((item) => Player.fromMap(item as Map<String, dynamic>)).toList(),
+      status: map['status'] ?? 'Ongoing',
+    );
+  }
 }

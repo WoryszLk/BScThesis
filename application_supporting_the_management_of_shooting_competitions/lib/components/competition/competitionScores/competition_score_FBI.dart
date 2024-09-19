@@ -1,6 +1,6 @@
+import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_service.dart';
-import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 
 class CompetitionScoreFBI extends StatefulWidget {
   final CompetitionWithId competitionWithId;
@@ -46,59 +46,56 @@ class PlayerScoreFBI {
 }
 
 class _CompetitionScoreFBIState extends State<CompetitionScoreFBI> {
-  final CompetitionService _competitionService = CompetitionService();
+  final CompetitionManager _competitionManager = CompetitionManager();
   late List<PlayerScoreFBI> _scores;
 
   @override
   void initState() {
     super.initState();
-    // Użycie PlayerWithId, który posiada pole 'id'
+    // Inicjalizacja punktów dla każdego zawodnika
     _scores = widget.competitionWithId.competition.players.map((player) {
-      return PlayerScoreFBI(playerId: player.id);  // Zmienione na PlayerWithId
+      return PlayerScoreFBI(playerId: player.id);
     }).toList();
-  }
-
-  void _saveScores() async {
-    await _competitionService.savePlayerScores(widget.competitionWithId.id, _scores);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Punktacja FBI'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: _saveScores,
-          ),
-        ],
+        title: const Text('Punktacja FBI'),
       ),
-      body: ListView.builder(
-        itemCount: _scores.length,
-        itemBuilder: (context, index) {
-          final score = _scores[index];
-          return ListTile(
-            title: Text('Zawodnik: ${score.playerId}'),
-            subtitle: Column(
-              children: [
-                TextField(
-                  onChanged: (value) => setState(() => score.alphaScore = int.parse(value)),
-                  decoration: const InputDecoration(labelText: 'Alpha Score'),
-                ),
-                TextField(
-                  onChanged: (value) => setState(() => score.betaScore = int.parse(value)),
-                  decoration: const InputDecoration(labelText: 'Beta Score'),
-                ),
-                TextField(
-                  onChanged: (value) => setState(() => score.charlieScore = int.parse(value)),
-                  decoration: const InputDecoration(labelText: 'Charlie Score'),
-                ),
-                Text('Status: ${score.isCompleted ? "Zaliczone" : "Niezaliczone"}'),
-              ],
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: _scores.length,
+              itemBuilder: (context, index) {
+                final score = _scores[index];
+                return ListTile(
+                  title: Text('Zawodnik: ${score.playerId}'),
+                  subtitle: Column(
+                    children: [
+                      TextField(
+                        onChanged: (value) => setState(() => score.alphaScore = int.parse(value)),
+                        decoration: const InputDecoration(labelText: 'Alpha Score'),
+                      ),
+                      TextField(
+                        onChanged: (value) => setState(() => score.betaScore = int.parse(value)),
+                        decoration: const InputDecoration(labelText: 'Beta Score'),
+                      ),
+                      TextField(
+                        onChanged: (value) => setState(() => score.charlieScore = int.parse(value)),
+                        decoration: const InputDecoration(labelText: 'Charlie Score'),
+                      ),
+                      Text('Status: ${score.isCompleted ? "Zaliczone" : "Niezaliczone"}'),
+                    ],
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+          _competitionManager.buildActionButtons(widget.competitionWithId.id, _scores),
+        ],
       ),
     );
   }
