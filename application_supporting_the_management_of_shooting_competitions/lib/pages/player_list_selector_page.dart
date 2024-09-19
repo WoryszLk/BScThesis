@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/add_player.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
+import 'package:uuid/uuid.dart';
 
 class PlayerListSelector extends StatefulWidget {
   final List<PlayerWithId> selectedPlayers;
@@ -17,8 +18,8 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
+  final Uuid _uuid = Uuid(); // Inicjalizacja UUID
 
-  final PlayerService _playerService = PlayerService();
   PlayerWithId? _editingPlayer;
   late List<PlayerWithId> _localSelectedPlayers;
 
@@ -44,7 +45,7 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
               firstNameController: _firstNameController,
               lastNameController: _lastNameController,
               ageController: _ageController,
-              playerService: _playerService,
+              playerService: PlayerService(),
               editingPlayer: _editingPlayer?.player,
               onClearForm: _clearForm,
               onSavePlayer: _savePlayer,
@@ -121,7 +122,7 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
     );
   }
 
-// Funkcja do edycji zawodnika
+  // Funkcja do edycji zawodnika
   void _editPlayer(PlayerWithId playerWithId) {
     setState(() {
       _editingPlayer = playerWithId;
@@ -131,28 +132,31 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
     });
   }
 
-// Funkcja do zapisywania zawodników
+  // Funkcja do zapisywania zawodników
   Future<void> _savePlayer() async {
     if (_formKey.currentState!.validate()) {
       if (_editingPlayer == null) {
-        // Tworzenie nowego zawodnika
+        // Tworzenie nowego zawodnika z unikalnym ID
         final newPlayer = Player(
+          id: _uuid.v4(), // Generowanie unikalnego ID za pomocą UUID
           firstName: _firstNameController.text,
           lastName: _lastNameController.text,
           age: _ageController.text.isNotEmpty ? _ageController.text : null,
         );
 
         setState(() {
-          // Dodanie do lokalnej listy
-          _localSelectedPlayers.add(PlayerWithId(id: 'temp-id', player: newPlayer));
+          // Dodanie nowego zawodnika do lokalnej listy
+          _localSelectedPlayers.add(PlayerWithId(id: newPlayer.id, player: newPlayer));
         });
       } else {
+        // Aktualizacja istniejącego zawodnika
         setState(() {
           final index = _localSelectedPlayers.indexWhere((p) => p.id == _editingPlayer!.id);
           if (index != -1) {
             _localSelectedPlayers[index] = PlayerWithId(
               id: _editingPlayer!.id,
               player: Player(
+                id: _editingPlayer!.id, // Użycie istniejącego ID podczas edycji
                 firstName: _firstNameController.text,
                 lastName: _lastNameController.text,
                 age: _ageController.text.isNotEmpty ? _ageController.text : null,
@@ -165,6 +169,7 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
     }
   }
 
+  // Czyszczenie formularza
   void _clearForm() {
     _firstNameController.clear();
     _lastNameController.clear();

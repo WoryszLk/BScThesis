@@ -1,3 +1,4 @@
+import 'package:application_supporting_the_management_of_shooting_competitions/components/competitionScores/competition_score_FBI.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +23,19 @@ class CompetitionService {
     }
   }
 
+  // Nowa metoda do zapisywania wyników zawodników
+  Future<void> savePlayerScores(String competitionId, List<PlayerScoreFBI> scores) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final competitionDoc = _firestore.collection('users').doc(user.uid).collection('competitions').doc(competitionId);
+      
+      for (var score in scores) {
+        await competitionDoc.collection('scores').doc(score.playerId).set(score.toMap());
+      }
+    }
+  }
+
+  // Pobieranie wszystkich zawodów
   Stream<List<CompetitionWithId>> getCompetitions() {
     final user = _auth.currentUser;
     if (user != null) {
@@ -75,7 +89,7 @@ class Competition {
 
   factory Competition.fromMap(Map<String, dynamic> map) {
   return Competition(
-    competitionType: map['competitionType'] ?? '',
+    competitionType: map['competitionType'] ?? 'Nieznany typ',
     startDate: (map['startDate'] as Timestamp).toDate(),
     players: (map['players'] as List<dynamic>).map((item) => Player.fromMap(item as Map<String, dynamic>)).toList(),
   );
