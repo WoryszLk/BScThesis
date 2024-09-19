@@ -1,4 +1,4 @@
-import 'package:application_supporting_the_management_of_shooting_competitions/components/competitionScores/competition_score_FBI.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competitionScores/competition_score_FBI.dart';
 import 'package:flutter/material.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_service.dart';
 

@@ -1,4 +1,4 @@
-import 'package:application_supporting_the_management_of_shooting_competitions/components/competitionScores/competition_score_FBI.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competitionScores/competition_score_FBI.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,7 +23,6 @@ class CompetitionService {
     }
   }
 
-  // Nowa metoda do zapisywania wyników zawodników
   Future<void> savePlayerScores(String competitionId, List<PlayerScoreFBI> scores) async {
     final user = _auth.currentUser;
     if (user != null) {
