@@ -1,4 +1,5 @@
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competitionScores/competition_score_FBI.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_service.dart';
 
@@ -25,16 +26,15 @@ class CompetitionManager {
 
   // Funkcja zapisywania wyników zawodów (logika zapisu punktacji)
   Future<void> saveCompetitionScores(String competitionId, List<dynamic> scores) async {
-    // Logika zapisu wyników do bazy danych lub Firestore
     await _competitionService.savePlayerScores(competitionId, scores);
   }
 
   // Funkcja obsługująca zakończenie zawodów
-  void endCompetition(String competitionId) {
-    print('Zawody $competitionId zostały zakończone');
+  Future<void> endCompetition(String competitionId) async {
+    await _competitionService.endCompetition(competitionId);
   }
 
-  Widget buildActionButtons(String competitionId, List<dynamic> scores) {
+   Widget buildActionButtons(BuildContext context, String competitionId, List<dynamic> scores) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
@@ -49,8 +49,12 @@ class CompetitionManager {
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
           ),
           ElevatedButton.icon(
-            onPressed: () {
-              endCompetition(competitionId);
+            onPressed: () async {
+              await endCompetition(competitionId);  // Zakończenie zawodów
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
             },
             icon: const Icon(Icons.stop),
             label: const Text('Zakończ'),

@@ -23,6 +23,8 @@ class CompetitionHistory extends StatelessWidget {
             itemCount: competitions.length,
             itemBuilder: (context, index) {
               final competition = competitions[index].competition;
+              final isCompleted = competition.status == 'Zakończone';
+              
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
@@ -40,7 +42,8 @@ class CompetitionHistory extends StatelessWidget {
                 child: _buildCompetitionHistoryCard(
                   competition.competitionType,
                   competition.startDate.toLocal().toString().split(' ')[0],
-                  'Zakończone', // do dynamicznej zmiany
+                  isCompleted ? 'Zakończone' : 'W trakcie trwania',
+                  isCompleted ? Colors.green : Colors.orange,
                 ),
               );
             },
@@ -54,7 +57,7 @@ class CompetitionHistory extends StatelessWidget {
     );
   }
 
-  Widget _buildCompetitionHistoryCard(String title, String date, String status) {
+  Widget _buildCompetitionHistoryCard(String title, String date, String status, Color statusColor) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.all(16),
@@ -82,7 +85,7 @@ class CompetitionHistory extends StatelessWidget {
           Text(
             status,
             style: TextStyle(
-              color: status == 'Zakończone' ? Colors.green : Colors.orange,
+              color: statusColor,
               fontWeight: FontWeight.bold,
             ),
           ),

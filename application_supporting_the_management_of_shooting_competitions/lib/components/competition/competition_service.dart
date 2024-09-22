@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 
 class CompetitionService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance; 
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future<void> addCompetition({
     required String competitionType,
@@ -18,7 +18,7 @@ class CompetitionService {
         'competitionType': competitionType,
         'startDate': startDate,
         'players': players.map((playerWithId) => playerWithId.player.toMap()).toList(),
-        'status': 'Ongoing', // Dodanie statusu zawodów
+        'status': 'Ongoing',
       });
     }
   }
@@ -44,7 +44,6 @@ class CompetitionService {
     return const Stream.empty();
   }
 
-  /// Zapis punktów zawodników do Firestore
   Future<void> savePlayerScores(String competitionId, List<dynamic> playerScores) async {
     final user = _auth.currentUser;
     if (user != null) {
@@ -60,7 +59,6 @@ class CompetitionService {
     }
   }
 
-  /// Zakończenie zawodów (zmiana statusu na "Zakończone")
   Future<void> endCompetition(String competitionId) async {
     final user = _auth.currentUser;
     if (user != null) {
@@ -77,7 +75,7 @@ class CompetitionService {
   }
 }
 
-/// Klasa do zarządzania zawodami wraz z ich unikalnym identyfikatorem
+// Klasa CompetitionWithId do przechowywania zawodów wraz z unikalnym ID
 class CompetitionWithId {
   final String id;
   final Competition competition;
@@ -87,7 +85,6 @@ class CompetitionWithId {
     required this.competition,
   });
 }
-
 /// Klasa zawodów (główna struktura)
 class Competition {
   final String competitionType;
@@ -99,7 +96,7 @@ class Competition {
     required this.competitionType,
     required this.startDate,
     required this.players,
-    this.status = 'Ongoing',
+    this.status = 'Ongoing', // Default
   });
 
   /// Konwersja obiektu Competition na Map (do zapisu w Firestore)

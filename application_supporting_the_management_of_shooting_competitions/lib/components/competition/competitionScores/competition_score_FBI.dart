@@ -94,14 +94,14 @@ class _CompetitionScoreFBIState extends State<CompetitionScoreFBI> {
               },
             ),
           ),
-          _competitionManager.buildActionButtons(widget.competitionWithId.id, _scores),
+          _competitionManager.buildActionButtons(context, widget.competitionWithId.id, _scores),
         ],
       ),
     );
   }
 
   String _getPlayerName(String playerId) {
-  final player = widget.competitionWithId.competition.players.firstWhere((p) => p.id == playerId);
-  return '${player.firstName} ${player.lastName}';
- }
+    final player = widget.competitionWithId.competition.players.firstWhere((p) => p.id == playerId);
+    return '${player.firstName} ${player.lastName}';
+  }
 }
