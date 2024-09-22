@@ -72,7 +72,7 @@ class _CompetitionScoreFBIState extends State<CompetitionScoreFBI> {
               itemBuilder: (context, index) {
                 final score = _scores[index];
                 return ListTile(
-                  title: Text('Zawodnik: ${score.playerId}'),
+                  title: Text('Zawodnik: ${_getPlayerName(score.playerId)}'),
                   subtitle: Column(
                     children: [
                       TextField(
@@ -99,4 +99,9 @@ class _CompetitionScoreFBIState extends State<CompetitionScoreFBI> {
       ),
     );
   }
+
+  String _getPlayerName(String playerId) {
+  final player = widget.competitionWithId.competition.players.firstWhere((p) => p.id == playerId);
+  return '${player.firstName} ${player.lastName}';
+ }
 }
