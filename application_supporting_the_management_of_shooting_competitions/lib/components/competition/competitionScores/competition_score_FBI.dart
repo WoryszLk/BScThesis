@@ -62,7 +62,7 @@ class _CompetitionScoreFBIState extends State<CompetitionScoreFBI> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Punktacja FBI'),
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
