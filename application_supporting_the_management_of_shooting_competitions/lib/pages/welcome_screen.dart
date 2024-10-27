@@ -36,7 +36,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
           height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
-              // Niebieska fala na górze
               Align(
                 alignment: Alignment.topCenter,
                 child: ClipPath(
@@ -54,7 +53,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                 ),
               ),
 
-              // Logo strzelca nad panelem logowania
               Positioned(
                 top: MediaQuery.of(context).size.height * 0.35,
                 left: 0,
@@ -68,7 +66,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                 ),
               ),
 
-              // Panel logowania (Sign In / Sign Up)
               Align(
                 alignment: Alignment.bottomCenter,
                 child: SizedBox(
@@ -88,7 +85,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                                 'Sign In',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: Colors.black, // Ustawienie koloru tekstu na czarny
+                                  color: Colors.black,
                                 ),
                               ),
                             ),
@@ -98,7 +95,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                                 'Sign Up',
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: Colors.black, // Ustawienie koloru tekstu na czarny
+                                  color: Colors.black,
                                 ),
                               ),
                             ),
@@ -132,7 +129,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
   }
 }
 
-// Klip kształtu "fali" w górnej części ekranu
 class _WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
