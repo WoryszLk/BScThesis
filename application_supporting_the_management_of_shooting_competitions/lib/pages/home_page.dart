@@ -14,12 +14,11 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: burgerMenu.buildAppBar(context),
       drawer: burgerMenu, 
-      body: SingleChildScrollView(  // Dodanie przewijania na całe body
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Karta do rozpoczęcia zawodów
             _buildMainOptionCard(
               context,
               'Rozpocznij zawody',
@@ -34,9 +33,8 @@ class HomePage extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
 
-            // Lista przycisków przewijanych poziomo
             const HorizontalButtonList(),
-            const SizedBox(height: 16), // Dodaj trochę miejsca
+            const SizedBox(height: 16),
 
             const Text(
               'Historia',
@@ -44,7 +42,6 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Wyświetlanie historii zawodów
              CompetitionHistory(),
           ],
         ),
@@ -61,7 +58,7 @@ class HomePage extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        height: 200,  // Wysokość większa niż zwykłe karty
+        height: 200,
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: Colors.white,

@@ -60,6 +60,15 @@ class CompetitionManager {
     }
   }
 
+  void createReport(BuildContext context, String competitionId) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Raport został utworzony.'),
+        backgroundColor: Colors.blue,
+      ),
+    );
+  }
+
   Widget buildActionButtons(
     BuildContext context,
     String competitionId,
@@ -77,6 +86,14 @@ class CompetitionManager {
             icon: const Icon(Icons.save),
             label: const Text('Zapisz'),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              createReport(context, competitionId);
+            },
+            icon: const Icon(Icons.description),
+            label: const Text('Stwórz Raport'),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
           ),
           ElevatedButton.icon(
             onPressed: () async {
