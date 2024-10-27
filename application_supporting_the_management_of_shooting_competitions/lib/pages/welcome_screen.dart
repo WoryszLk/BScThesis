@@ -30,49 +30,42 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
               Align(
-                alignment: const AlignmentDirectional(20, -1.2),
-                child: Container(
-                  height: MediaQuery.of(context).size.width,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.tertiary.withOpacity(0.5),
+                alignment: Alignment.topCenter,
+                child: ClipPath(
+                  clipper: _WaveClipper(), 
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 2.2,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Color(0xFF4A90E2), Color(0xFF007AFF)], // Niebieski gradient
+                      ),
+                    ),
                   ),
                 ),
               ),
-              Align(
-                alignment: const AlignmentDirectional(-2.7, -1.2),
-                child: Container(
-                  height: MediaQuery.of(context).size.width / 1.3,
-                  width: MediaQuery.of(context).size.width / 1.3,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+
+              Positioned(
+                top: MediaQuery.of(context).size.height * 0.35,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Image.asset(
+                    'lib/images/shooterlogo.png',
+                    height: 120,
+                    width: 120,
                   ),
                 ),
               ),
-              Align(
-                alignment: const AlignmentDirectional(2.7, -1.2),
-                child: Container(
-                  height: MediaQuery.of(context).size.width / 1.3,
-                  width: MediaQuery.of(context).size.width / 1.3,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
-                  ),
-                ),
-              ),
-              BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 100.0, sigmaY: 100.0),
-                child: Container(),
-              ),
+
               Align(
                 alignment: Alignment.bottomCenter,
                 child: SizedBox(
@@ -87,8 +80,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                               .colorScheme
                               .onBackground
                               .withOpacity(0.5),
-                          labelColor:
-                              Theme.of(context).colorScheme.onBackground,
+                          labelColor: Theme.of(context).colorScheme.onBackground,
                           tabs: const [
                             Padding(
                               padding: EdgeInsets.all(12.0),
@@ -119,7 +111,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                             BlocProvider<SignUpBloc>(
                               create: (context) => SignUpBloc(
                                 userRepository:
-                                    context.read<AuthenticationBloc>().userRepository,
+                                context.read<AuthenticationBloc>().userRepository,
                               ),
                               child: const SignUpScreen(),
                             ),
@@ -135,5 +127,25 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
         ),
       ),
     );
+  }
+}
+
+class _WaveClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.lineTo(0, size.height - 100);
+    path.quadraticBezierTo(
+      size.width * 0.5, size.height, 
+      size.width, size.height - 100,
+    );
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return false;
   }
 }
