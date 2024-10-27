@@ -36,23 +36,25 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
           height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
+              // Niebieska fala na górze
               Align(
                 alignment: Alignment.topCenter,
                 child: ClipPath(
-                  clipper: _WaveClipper(), 
+                  clipper: _WaveClipper(),
                   child: Container(
                     height: MediaQuery.of(context).size.height / 2.2,
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Color(0xFF4A90E2), Color(0xFF007AFF)], // Niebieski gradient
+                        colors: [Color(0xFF4A90E2), Color(0xFF007AFF)],
                       ),
                     ),
                   ),
                 ),
               ),
 
+              // Logo strzelca nad panelem logowania
               Positioned(
                 top: MediaQuery.of(context).size.height * 0.35,
                 left: 0,
@@ -66,6 +68,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                 ),
               ),
 
+              // Panel logowania (Sign In / Sign Up)
               Align(
                 alignment: Alignment.bottomCenter,
                 child: SizedBox(
@@ -76,11 +79,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                         padding: const EdgeInsets.symmetric(horizontal: 50.0),
                         child: TabBar(
                           controller: tabController,
-                          unselectedLabelColor: Theme.of(context)
-                              .colorScheme
-                              .onBackground
-                              .withOpacity(0.5),
-                          labelColor: Theme.of(context).colorScheme.onBackground,
+                          unselectedLabelColor: Colors.black.withOpacity(0.5),
+                          labelColor: Colors.black,
                           tabs: const [
                             Padding(
                               padding: EdgeInsets.all(12.0),
@@ -88,6 +88,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                                 'Sign In',
                                 style: TextStyle(
                                   fontSize: 18,
+                                  color: Colors.black, // Ustawienie koloru tekstu na czarny
                                 ),
                               ),
                             ),
@@ -97,6 +98,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                                 'Sign Up',
                                 style: TextStyle(
                                   fontSize: 18,
+                                  color: Colors.black, // Ustawienie koloru tekstu na czarny
                                 ),
                               ),
                             ),
@@ -111,7 +113,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
                             BlocProvider<SignUpBloc>(
                               create: (context) => SignUpBloc(
                                 userRepository:
-                                context.read<AuthenticationBloc>().userRepository,
+                                    context.read<AuthenticationBloc>().userRepository,
                               ),
                               child: const SignUpScreen(),
                             ),
@@ -130,6 +132,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
   }
 }
 
+// Klip kształtu "fali" w górnej części ekranu
 class _WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

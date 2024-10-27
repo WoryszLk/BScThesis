@@ -30,6 +30,10 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+*.cache
+**/build/
+**/dist/
+**/.dart_tool/
 
 # Symbolication related
 app.*.symbols
@@ -38,6 +42,10 @@ app.*.symbols
 app.*.map.json
 
 # Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+/android/app/debug/
+/android/app/profile/
+/android/app/release/
+/android/.gradle/
+/android/.idea/
+/android/local.properties
+/android/.vscode/
