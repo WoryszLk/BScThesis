@@ -14,15 +14,57 @@ class CompetitionManager {
     return CompetitionScoreGeneric(competitionWithId: competitionWithId);
   }
 
-  Future<void> saveCompetitionScores(String competitionId, List<GenericScore> scores) async {
-    await _competitionService.savePlayerScores(competitionId: competitionId, playerScores: scores);
+  Future<void> saveCompetitionScores(
+    BuildContext context,
+    String competitionId,
+    List<GenericScore> scores,
+  ) async {
+    try {
+      await _competitionService.savePlayerScores(
+        competitionId: competitionId,
+        playerScores: scores,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Wyniki zawodników zostały zapisane pomyślnie.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Błąd podczas zapisywania wyników: $error'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
-  Future<void> endCompetition(String competitionId) async {
-    await _competitionService.endCompetition(competitionId);
+  Future<void> endCompetition(BuildContext context, String competitionId) async {
+    try {
+      await _competitionService.endCompetition(competitionId);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Zawody zostały zakończone.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pop(context);
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Błąd podczas kończenia zawodów: $error'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
-  Widget buildActionButtons(BuildContext context, String competitionId, List<GenericScore> scores) {
+  Widget buildActionButtons(
+    BuildContext context,
+    String competitionId,
+    List<GenericScore> scores,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
@@ -30,7 +72,7 @@ class CompetitionManager {
         children: [
           ElevatedButton.icon(
             onPressed: () {
-              saveCompetitionScores(competitionId, scores);
+              saveCompetitionScores(context, competitionId, scores);
             },
             icon: const Icon(Icons.save),
             label: const Text('Zapisz'),
@@ -38,8 +80,7 @@ class CompetitionManager {
           ),
           ElevatedButton.icon(
             onPressed: () async {
-              await endCompetition(competitionId);
-              Navigator.pop(context);
+              await endCompetition(context, competitionId);
             },
             icon: const Icon(Icons.stop),
             label: const Text('Zakończ'),

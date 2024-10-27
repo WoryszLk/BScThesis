@@ -31,9 +31,6 @@ class CompetitionHistory extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => Scaffold(
-                        appBar: AppBar(
-                          title: Text('Punktacja dla ${competition.competitionType}'),
-                        ),
                         body: _competitionManager.loadCompetitionScorePage(competitions[index]),
                       ),
                     ),
