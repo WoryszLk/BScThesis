@@ -1,4 +1,5 @@
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_manager.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/generic_score.dart';
 import 'package:flutter/material.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_service.dart';
 
@@ -94,7 +95,7 @@ class _CompetitionScoreFBIState extends State<CompetitionScoreFBI> {
               },
             ),
           ),
-          _competitionManager.buildActionButtons(context, widget.competitionWithId.id, _scores),
+          _competitionManager.buildActionButtons(context, widget.competitionWithId.id, _scores.cast<GenericScore>()),
         ],
       ),
     );
