@@ -2,7 +2,7 @@ import 'package:application_supporting_the_management_of_shooting_competitions/c
 import 'package:flutter/material.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_manager.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_service.dart';
-import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competitionScores/competition_score_ShootOff.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competitionScores/ShootOff/competition_score_ShootOff.dart';
 import 'generic_score.dart';
 
 class CompetitionScoreGeneric extends StatefulWidget {
