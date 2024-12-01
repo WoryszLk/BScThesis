@@ -8,20 +8,27 @@ class CompetitionService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Future<void> addCompetition({
+  Future<String> addCompetition({
     required String competitionType,
     required List<PlayerWithId> players,
     required DateTime startDate,
   }) async {
     final user = _auth.currentUser;
     if (user != null) {
-      await firestore.collection('users').doc(user.uid).collection('competitions').add({
+      final competitionRef = await firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('competitions')
+          .add({
         'competitionType': competitionType,
         'startDate': startDate,
         'players': players.map((playerWithId) => playerWithId.player.toMap()).toList(),
         'status': 'Ongoing',
       });
+
+      return competitionRef.id;
     }
+    throw Exception('User not authenticated');
   }
 
   Stream<List<CompetitionWithId>> getCompetitions() {

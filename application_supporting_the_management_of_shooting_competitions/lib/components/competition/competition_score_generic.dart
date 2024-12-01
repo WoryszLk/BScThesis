@@ -1,6 +1,8 @@
+import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 import 'package:flutter/material.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_manager.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competition_service.dart';
+import 'package:application_supporting_the_management_of_shooting_competitions/components/competition/competitionScores/competition_score_ShootOff.dart';
 import 'generic_score.dart';
 
 class CompetitionScoreGeneric extends StatefulWidget {
@@ -19,6 +21,27 @@ class _CompetitionScoreGenericState extends State<CompetitionScoreGeneric> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.competitionWithId.competition.competitionType == 'Shoot off') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ShootOffPage(
+              selectedPlayers: widget.competitionWithId.competition.players
+                  .map((player) => PlayerWithId(id: player.id, player: player))
+                  .toList(),
+              competitionId: widget.competitionWithId.id,
+            ),
+          ),
+        );
+      });
+    } else {
+      _initializeScores();
+    }
+  }
+
+  void _initializeScores() {
     _scores = widget.competitionWithId.competition.players.map((player) {
       return GenericScore(
         playerId: player.id,

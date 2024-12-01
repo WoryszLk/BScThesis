@@ -16,13 +16,13 @@ class StarterCompetition extends StatefulWidget {
 
 class _StarterCompetitionState extends State<StarterCompetition> {
   int? _selectedCompetitionIndex;
-  List<PlayerWithId> _selectedPlayers = []; // Przechowywanie lokalne wybranych zawodników
+  List<PlayerWithId> _selectedPlayers = [];
   final CompetitionService _competitionService = CompetitionService();
 
   final List<String> _competitionNames = [
     'FBI',
     'PIRO',
-    '2guns 2pistols',
+    'Shoot off',
     'Piromanek',
     'Top Gun',
     'BTG',
@@ -31,13 +31,12 @@ class _StarterCompetitionState extends State<StarterCompetition> {
   final List<String> _imagePaths = [
     'lib/images/fbi.jpg',
     'lib/images/piro.jpg',
-    'lib/images/2guns_2pistols.jpg',
+    'lib/images/Shoot_off.jpg',
     'lib/images/piromanek.jpg',
     'lib/images/top_gun.jpg',
     'lib/images/btg.jpg',
   ];
 
-  // Przejście do ekranu wyboru zawodów
   void _navigateToCompetitionSelector() async {
     final selectedIndex = await Navigator.push<int>(
       context,
@@ -53,13 +52,14 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
-  // Przejście do ekranu wyboru zawodników
   void _navigateToPlayersSelector() async {
     final selectedPlayers = await Navigator.push<List<PlayerWithId>>(
       context,
-      MaterialPageRoute(builder: (context) => PlayerListSelector(
-        selectedPlayers: _selectedPlayers, // Przekazanie aktualnie wybranych zawodników
-      )),
+      MaterialPageRoute(
+        builder: (context) => PlayerListSelector(
+          selectedPlayers: _selectedPlayers,
+        ),
+      ),
     );
 
     if (selectedPlayers != null) {
@@ -69,7 +69,6 @@ class _StarterCompetitionState extends State<StarterCompetition> {
     }
   }
 
-  // Wyświetlenie zasad dla wybranych zawodów
   void _navigateToRulesSelector() async {
     if (_selectedCompetitionIndex != null) {
       final selectedCompetition = _competitionNames[_selectedCompetitionIndex!];
@@ -100,7 +99,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
       );
 
       setState(() {
-        _selectedPlayers = [];  // Czyszczenie listy zawodników po rozpoczęciu zawodów
+        _selectedPlayers = [];
       });
 
       Navigator.push(
@@ -112,12 +111,6 @@ class _StarterCompetitionState extends State<StarterCompetition> {
         const SnackBar(content: Text('Wybierz typ zawodów i zawodników')),
       );
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedPlayers = [];
   }
 
   @override
