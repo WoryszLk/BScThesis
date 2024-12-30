@@ -74,7 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 										width: MediaQuery.of(context).size.width * 0.9,
 										child: MyTextField(
 											controller: passwordController,
-											hintText: 'Password',
+											hintText: 'Hasło',
 											obscureText: obscurePassword,
 											keyboardType: TextInputType.visiblePassword,
 											prefixIcon: const Icon(CupertinoIcons.lock_fill),
@@ -158,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 											crossAxisAlignment: CrossAxisAlignment.start,
 												children: [
 													Text(
-														"⚈  1 uppercase",
+														"⚈  1 duża litera",
 														style: TextStyle(
 															color: containsUpperCase
 																? Colors.green
@@ -166,7 +166,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 														),
 													),
 													Text(
-														"⚈  1 lowercase",
+														"⚈  1 mała litera",
 														style: TextStyle(
 															color: containsLowerCase
 																? Colors.green
@@ -174,7 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 														),
 													),
 													Text(
-														"⚈  1 number",
+														"⚈  1 cyfra",
 														style: TextStyle(
 															color: containsNumber
 																? Colors.green
@@ -187,7 +187,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 												crossAxisAlignment: CrossAxisAlignment.start,
 												children: [
 													Text(
-														"⚈  1 special character",
+														"⚈  1 znak specjalny",
 														style: TextStyle(
 															color: containsSpecialChar
 																? Colors.green
@@ -195,7 +195,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 														),
 													),
 													Text(
-														"⚈  8 minimum character",
+														"⚈  minimum 8 znaków",
 														style: TextStyle(
 															color: contains8Length
 																? Colors.green
@@ -211,7 +211,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 										width: MediaQuery.of(context).size.width * 0.9,
 										child: MyTextField(
 											controller: nameController,
-											hintText: 'Name',
+											hintText: 'Nazwa użytkownika',
 											obscureText: false,
 											keyboardType: TextInputType.name,
 											prefixIcon: const Icon(CupertinoIcons.person_fill),
@@ -258,7 +258,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 													child: const Padding(
 														padding: EdgeInsets.symmetric(horizontal: 25, vertical: 5),
 														child: Text(
-															'Sign Up',
+															'Rejestracja',
 															textAlign: TextAlign.center,
 															style: TextStyle(
 																color: Colors.white,

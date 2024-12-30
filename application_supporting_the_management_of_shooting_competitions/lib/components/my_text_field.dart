@@ -4,58 +4,63 @@ class MyTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final bool obscureText;
-	final TextInputType keyboardType;
-	final Widget? suffixIcon;
-	final VoidCallback? onTap;
-	final Widget? prefixIcon;
-	final String? Function(String?)? validator;
-	final FocusNode? focusNode;
-	final String? errorMsg;
-	final String? Function(String?)? onChanged;
+  final TextInputType keyboardType;
+  final Widget? suffixIcon;
+  final VoidCallback? onTap;
+  final Widget? prefixIcon;
+  final String? Function(String?)? validator;
+  final FocusNode? focusNode;
+  final String? errorMsg;
+  final void Function(String)? onChanged;
 
   const MyTextField({
     super.key,
     required this.controller,
     required this.hintText,
     required this.obscureText,
-		required this.keyboardType,
-		this.suffixIcon,
-		this.onTap,
-		this.prefixIcon,
-		this.validator,
-		this.focusNode,
-		this.errorMsg,
-		this.onChanged
+    required this.keyboardType,
+    this.suffixIcon,
+    this.onTap,
+    this.prefixIcon,
+    this.validator,
+    this.focusNode,
+    this.errorMsg,
+    this.onChanged,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       validator: validator,
       controller: controller,
       obscureText: obscureText,
-			keyboardType: keyboardType,
-			focusNode: focusNode,
-			onTap: onTap,
-			textInputAction: TextInputAction.next,
-			onChanged: onChanged,
+      keyboardType: keyboardType,
+      focusNode: focusNode,
+      onTap: onTap,
+      onChanged: onChanged,
+      style: const TextStyle(
+        color: Colors.white, // Ustawienie białego koloru tekstu
+        fontSize: 16, // Opcjonalnie: zmień rozmiar tekstu
+      ),
       decoration: InputDecoration(
-				suffixIcon: suffixIcon,
-				prefixIcon: prefixIcon,
-				enabledBorder: OutlineInputBorder(
-					borderRadius: BorderRadius.circular(10),
-					borderSide: const BorderSide(color: Colors.transparent),
-				),
-				focusedBorder: OutlineInputBorder(
-					borderRadius: BorderRadius.circular(20),
-					borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
-				),
-				fillColor: Colors.blueGrey.shade900, // Tło dla pola tekstowego
-				filled: true,
-				hintText: hintText,
-				hintStyle: TextStyle(color: Colors.blueGrey[400]),
-				errorText: errorMsg,
-			),
+        suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Colors.transparent),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+        ),
+        fillColor: Colors.blueGrey.shade900, // Tło dla pola tekstowego
+        filled: true,
+        hintText: hintText,
+        hintStyle: TextStyle(
+          color: Colors.blueGrey[400], // Szary kolor dla podpowiedzi
+        ),
+        errorText: errorMsg,
+      ),
     );
   }
 }

@@ -18,11 +18,21 @@ class ShootOffQualificationPhase extends StatefulWidget {
 
 class _ShootOffQualificationPhaseState extends State<ShootOffQualificationPhase> {
   late List<Map<String, dynamic>> playerResults;
+  late List<TextEditingController> time1Controllers;
+  late List<TextEditingController> time2Controllers;
 
   @override
   void initState() {
     super.initState();
     playerResults = widget.playerResults;
+
+    time1Controllers = playerResults.map((result) {
+      return TextEditingController(text: result['time1'].toString());
+    }).toList();
+
+    time2Controllers = playerResults.map((result) {
+      return TextEditingController(text: result['time2'].toString());
+    }).toList();
   }
 
   void _updateTime(int index, String timeField, String value) {
@@ -78,9 +88,7 @@ class _ShootOffQualificationPhaseState extends State<ShootOffQualificationPhase>
                                 ),
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) => _updateTime(index, 'time1', value),
-                                controller: TextEditingController(
-                                  text: result['time1'].toString(),
-                                ),
+                                controller: time1Controllers[index],
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -92,9 +100,7 @@ class _ShootOffQualificationPhaseState extends State<ShootOffQualificationPhase>
                                 ),
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) => _updateTime(index, 'time2', value),
-                                controller: TextEditingController(
-                                  text: result['time2'].toString(),
-                                ),
+                                controller: time2Controllers[index],
                               ),
                             ),
                           ],
@@ -122,5 +128,16 @@ class _ShootOffQualificationPhaseState extends State<ShootOffQualificationPhase>
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    for (var controller in time1Controllers) {
+      controller.dispose();
+    }
+    for (var controller in time2Controllers) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 }

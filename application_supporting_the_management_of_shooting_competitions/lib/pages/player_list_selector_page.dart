@@ -3,6 +3,8 @@ import 'package:application_supporting_the_management_of_shooting_competitions/c
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/add_player.dart';
 import 'package:application_supporting_the_management_of_shooting_competitions/components/players/player_service.dart';
 import 'package:uuid/uuid.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:excel/excel.dart';
 
 class PlayerListSelector extends StatefulWidget {
   final List<PlayerWithId> selectedPlayers;
@@ -18,7 +20,7 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
-  final Uuid _uuid = Uuid(); // Inicjalizacja UUID
+  final Uuid _uuid = Uuid();
 
   PlayerWithId? _editingPlayer;
   late List<PlayerWithId> _localSelectedPlayers;
@@ -34,12 +36,18 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Zarządzaj zawodnikami'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.upload_file),
+            onPressed: _importPlayersFromExcel,
+            tooltip: 'Importuj zawodników z Excel',
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Formularz dodawania/edycji zawodnika
             AddPlayerForm(
               formKey: _formKey,
               firstNameController: _firstNameController,
@@ -52,7 +60,6 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
             ),
             const SizedBox(height: 32.0),
             Expanded(
-              // Wyświetlanie lokalnej listy zawodników
               child: ListView.builder(
                 itemCount: _localSelectedPlayers.length,
                 itemBuilder: (context, index) {
@@ -74,14 +81,12 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Edycja zawodnika
                           IconButton(
                             icon: const Icon(Icons.edit),
                             onPressed: () {
                               _editPlayer(playerWithId);
                             },
                           ),
-                          // Usuniecie zawodnika
                           IconButton(
                             icon: const Icon(Icons.delete),
                             onPressed: () {
@@ -90,7 +95,6 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
                               });
                             },
                           ),
-                          // Wybieranie zawodnika
                           Checkbox(
                             value: isSelected,
                             onChanged: (value) {
@@ -113,16 +117,27 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pop(context, _localSelectedPlayers);
-        },
-        child: const Icon(Icons.done),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            onPressed: _importPlayersFromExcel,
+            label: const Text('Importuj z Excel'),
+            icon: const Icon(Icons.upload_file),
+          ),
+          const SizedBox(width: 16),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.pop(context, _localSelectedPlayers);
+            },
+            label: const Text('Dalej'),
+            icon: const Icon(Icons.arrow_forward),
+          ),
+        ],
       ),
     );
   }
 
-  // Funkcja do edycji zawodnika
   void _editPlayer(PlayerWithId playerWithId) {
     setState(() {
       _editingPlayer = playerWithId;
@@ -132,31 +147,27 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
     });
   }
 
-  // Funkcja do zapisywania zawodników
   Future<void> _savePlayer() async {
     if (_formKey.currentState!.validate()) {
       if (_editingPlayer == null) {
-        // Tworzenie nowego zawodnika z unikalnym ID
         final newPlayer = Player(
-          id: _uuid.v4(), // Generowanie unikalnego ID za pomocą UUID
+          id: _uuid.v4(),
           firstName: _firstNameController.text,
           lastName: _lastNameController.text,
           age: _ageController.text.isNotEmpty ? _ageController.text : null,
         );
 
         setState(() {
-          // Dodanie nowego zawodnika do lokalnej listy
           _localSelectedPlayers.add(PlayerWithId(id: newPlayer.id, player: newPlayer));
         });
       } else {
-        // Aktualizacja istniejącego zawodnika
         setState(() {
           final index = _localSelectedPlayers.indexWhere((p) => p.id == _editingPlayer!.id);
           if (index != -1) {
             _localSelectedPlayers[index] = PlayerWithId(
               id: _editingPlayer!.id,
               player: Player(
-                id: _editingPlayer!.id, // Użycie istniejącego ID podczas edycji
+                id: _editingPlayer!.id,
                 firstName: _firstNameController.text,
                 lastName: _lastNameController.text,
                 age: _ageController.text.isNotEmpty ? _ageController.text : null,
@@ -169,7 +180,54 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
     }
   }
 
-  // Czyszczenie formularza
+  Future<void> _importPlayersFromExcel() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['xlsx'],
+      );
+
+      if (result != null) {
+        final bytes = result.files.single.bytes;
+
+        if (bytes != null) {
+          var excel = Excel.decodeBytes(bytes);
+
+          for (var table in excel.tables.keys) {
+            for (var row in excel.tables[table]!.rows.skip(1)) {
+              // Zakładamy, że pierwsza linia to nagłówki
+              if (row.length >= 2) {
+                final firstName = row[0]?.value.toString() ?? '';
+                final lastName = row[1]?.value.toString() ?? '';
+                final age = row.length > 2 && row[2]?.value.toString().isNotEmpty == true
+                    ? row[2]?.value.toString()
+                    : null;
+
+                // Dodajemy warunek: imię i nazwisko muszą być uzupełnione
+                if (firstName.isNotEmpty && lastName.isNotEmpty) {
+                  final newPlayer = Player(
+                    id: _uuid.v4(),
+                    firstName: firstName,
+                    lastName: lastName,
+                    age: age,
+                  );
+
+                  setState(() {
+                    _localSelectedPlayers.add(PlayerWithId(id: newPlayer.id, player: newPlayer));
+                  });
+                }
+              }
+            }
+          }
+        } else {
+          print("Brak dostępu do danych pliku.");
+        }
+      }
+    } catch (e) {
+      print("Błąd podczas importowania zawodników: $e");
+    }
+  }
+
   void _clearForm() {
     _firstNameController.clear();
     _lastNameController.clear();

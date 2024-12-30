@@ -1,5 +1,5 @@
-import 'package:application_supporting_the_management_of_shooting_competitions/pages/home_page.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HorizontalButtonList extends StatelessWidget {
   const HorizontalButtonList({Key? key}) : super(key: key);
@@ -10,29 +10,37 @@ class HorizontalButtonList extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          // testingna ten moment
-          _buildCustomButton(context, 'Test 1', 'lib/images/PlayersList.jpg', HomePage()),
-          _buildCustomButton(context, 'Test 1', 'lib/images/PlayersList.jpg', HomePage()),
-          _buildCustomButton(context, 'Test 1', 'lib/images/PlayersList.jpg', HomePage()),
-          _buildCustomButton(context, 'Test 1', 'lib/images/PlayersList.jpg', HomePage()),
-          _buildCustomButton(context, 'Test 1', 'lib/images/PlayersList.jpg', HomePage()),
-          _buildCustomButton(context, 'Test 1', 'lib/images/PlayersList.jpg', HomePage()),
-
+          _buildImageButton(
+            context,
+            'Mój klub',
+            'lib/images/sts.jpg',
+            () => _launchURL('https://sts.org.pl/'),
+          ),
+          _buildImageButton(
+            context,
+            'PZSS',
+            'lib/images/pzss.jpg',
+            () => _launchURL('https://www.pzss.org.pl/'),
+          ),
+          _buildImageButton(
+            context,
+            'System PZSS',
+            'lib/images/PlayersList.jpg',
+            () => _launchURL('https://portal.pzss.org.pl/'),
+          ),
+          _buildTextButton(context, 'Zbrojownia'),
+          _buildTextButton(context, 'Raporty'),
+          _buildTextButton(context, 'Wyniki'),
         ],
       ),
     );
   }
 
-  Widget _buildCustomButton(BuildContext context, String label, String imagePath, Widget routePath) {
+  Widget _buildImageButton(BuildContext context, String label, String imagePath, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => routePath),
-          );
-        },
+        onTap: onTap,
         child: Container(
           width: 120,
           height: 120,
@@ -47,8 +55,8 @@ class HorizontalButtonList extends StatelessWidget {
             child: Text(
               label,
               style: const TextStyle(
-                color: Colors.white, 
-                fontSize: 16, 
+                color: Colors.white,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
                 shadows: [
                   Shadow(
@@ -64,5 +72,41 @@ class HorizontalButtonList extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildTextButton(BuildContext context, String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: GestureDetector(
+        onTap: () {
+        },
+        child: Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.0),
+            color: Theme.of(context).primaryColor,
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri)) {
+      throw 'Could not launch $url';
+    }
   }
 }
