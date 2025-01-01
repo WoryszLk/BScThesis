@@ -42,7 +42,6 @@ class CompetitionRulesPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Sekcja Zasady
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
@@ -79,7 +78,6 @@ class CompetitionRulesPage extends StatelessWidget {
               color: Colors.blueGrey,
             ),
 
-            // Sekcja Zawodnicy
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
