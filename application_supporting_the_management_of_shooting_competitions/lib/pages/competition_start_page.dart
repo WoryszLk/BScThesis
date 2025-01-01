@@ -146,7 +146,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
                     child: CustomButton(
                       width: double.infinity,
                       height: double.infinity,
-                      imagePath: 'lib/images/buttonShooters.jpg',
+                      imagePath: 'lib/images/zawodnicy.jpg',
                       text: 'Zawodnicy',
                       onPressed: _navigateToPlayersSelector,
                     ),
@@ -156,7 +156,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
                     child: CustomButton(
                       width: double.infinity,
                       height: double.infinity,
-                      imagePath: 'lib/images/buttonShooters.jpg',
+                      imagePath: 'lib/images/zasady.jpg',
                       text: 'Zasady',
                       onPressed: _navigateToRulesSelector,
                     ),

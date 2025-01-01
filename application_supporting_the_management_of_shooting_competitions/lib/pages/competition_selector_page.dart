@@ -14,10 +14,11 @@ class _CompetitionSelectorState extends State<CompetitionSelector> {
   final List<Map<String, String>> _competitions = [
     {'text': 'FBI', 'imagePath': 'lib/images/fbi.jpg'},
     {'text': 'PIRO', 'imagePath': 'lib/images/piro.jpg'},
-    {'text': 'Shoot off', 'imagePath': 'lib/images/2guns_2pistols.jpg'},
-    {'text': 'Piromanek', 'imagePath': 'lib/images/piromanek.jpg'},
-    {'text': 'Top Gun', 'imagePath': 'lib/images/top_gun.jpg'},
+    {'text': 'Shoot off', 'imagePath': 'lib/images/shootOff.jpg'},
     {'text': 'BTG', 'imagePath': 'lib/images/btg.jpg'},
+    {'text': 'NRA', 'imagePath': 'lib/images/nra.jpg'},
+    {'text': 'Top Gun', 'imagePath': 'lib/images/top_gun.jpg'},
+    
   ];
 
   void _onItemSelected(int index) {

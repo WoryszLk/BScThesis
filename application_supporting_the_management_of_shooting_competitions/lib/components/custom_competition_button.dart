@@ -71,9 +71,17 @@ class _CustomCompetitionButtonState extends State<CustomCompetitionButton> with 
           alignment: Alignment.center,
           child: Text(
             widget.text,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 24,
-              color: widget.isSelected ? Colors.white : Colors.black,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  offset: Offset(0, 1),
+                  blurRadius: 3.0,
+                  color: Colors.black54,
+                ),
+              ],
             ),
           ),
         ),
