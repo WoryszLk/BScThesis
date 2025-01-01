@@ -32,7 +32,7 @@ class _CompetitionSelectorState extends State<CompetitionSelector> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Competition Selector'),
+        title: const Text('Wybierz dyscyplinę'),
       ),
       backgroundColor: Colors.grey[300],
       body: ListWheelScrollView(
