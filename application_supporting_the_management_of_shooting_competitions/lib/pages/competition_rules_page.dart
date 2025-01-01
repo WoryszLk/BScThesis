@@ -13,6 +13,11 @@ const Map<String, List<String>> competitionRules = {
     'Zadanie 1: XYZ',
     'Zadanie 2: ABC'
   ],
+  'Shoot off': [
+    'Faza Przedmeczu: Każdy zawodnik wykonuje minimum jedną próbę strzelecką do wyznaczonych celów (popperów). Możliwe są maksymalnie dwie próby. Na podstawie czasu z najlepszej próby, zawodnicy są dobierani w pary: najlepszy czas z najgorszym czasem, itd.',
+    'Faza Pojedynków: Każda para rywalizuje, strzelając do 5 popperów na swojej stronie. Zawodnik, który jako pierwszy zbije wszystkie 5 popperów, wygrywa pojedynek. Przegrany odpada, a zwycięzca przechodzi do kolejnej fazy.',
+    'Łączenie par: W kolejnych fazach zwycięzcy są łączeni w pary zgodnie z drabinką eliminacyjną.'
+  ]
 };
 
 class CompetitionRulesPage extends StatelessWidget {
@@ -22,7 +27,7 @@ class CompetitionRulesPage extends StatelessWidget {
   const CompetitionRulesPage({
     Key? key,
     required this.selectedCompetition,
-    required this.selectedPlayers, // Przechwycenie wybranych zawodników
+    required this.selectedPlayers,
   }) : super(key: key);
 
   @override
@@ -33,40 +38,85 @@ class CompetitionRulesPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Zasady zawodów: $selectedCompetition'),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Sekcja Zasady
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Zasady dla $selectedCompetition',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.all(8.0),
               itemCount: rules.length,
               itemBuilder: (context, index) {
                 return Card(
+                  color: Colors.blueGrey.shade900,
+                  margin: const EdgeInsets.symmetric(vertical: 6.0),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
                       rules[index],
-                      style: const TextStyle(fontSize: 16),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 );
               },
             ),
-          ),
-          const Divider(),
-          // Wyświetlanie wybranych zawodników
-          Expanded(
-            child: ListView.builder(
+
+            const Divider(
+              height: 40,
+              thickness: 2,
+              color: Colors.blueGrey,
+            ),
+
+            // Sekcja Zawodnicy
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Lista zawodników',
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(8.0),
               itemCount: selectedPlayers.length,
               itemBuilder: (context, index) {
                 final player = selectedPlayers[index].player;
-                return ListTile(
-                  title: Text('${player.firstName} ${player.lastName}'),
-                  subtitle: Text(player.age != null ? 'Wiek: ${player.age}' : 'Wiek: nie podano'),
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 6.0),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.blueAccent,
+                      child: Text(
+                        player.firstName[0],
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    title: Text(
+                      '${player.firstName} ${player.lastName}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      player.age != null ? 'Wiek: ${player.age}' : 'Wiek: nie podano',
+                    ),
+                  ),
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

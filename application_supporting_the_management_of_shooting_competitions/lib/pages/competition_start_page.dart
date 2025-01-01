@@ -31,7 +31,7 @@ class _StarterCompetitionState extends State<StarterCompetition> {
   final List<String> _imagePaths = [
     'lib/images/fbi.jpg',
     'lib/images/piro.jpg',
-    'lib/images/ShootOff.jpg',
+    'lib/images/shootOff.jpg',
     'lib/images/btg.jpg',
     'lib/images/nra.jpg',
     'lib/images/top_gun.jpg',
