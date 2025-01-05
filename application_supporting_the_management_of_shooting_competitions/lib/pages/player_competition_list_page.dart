@@ -4,7 +4,7 @@ class CompetitionList extends StatefulWidget {
   const CompetitionList({super.key});
 
   @override
-  _CompetitionListState createState() => _CompetitionListState(); // Dodanie implementacji createState
+  _CompetitionListState createState() => _CompetitionListState(); 
 }
 
 class _CompetitionListState extends State<CompetitionList> {

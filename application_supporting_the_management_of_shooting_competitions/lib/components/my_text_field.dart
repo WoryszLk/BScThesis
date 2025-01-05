@@ -39,8 +39,8 @@ class MyTextField extends StatelessWidget {
       onTap: onTap,
       onChanged: onChanged,
       style: const TextStyle(
-        color: Colors.white, // Ustawienie białego koloru tekstu
-        fontSize: 16, // Opcjonalnie: zmień rozmiar tekstu
+        color: Colors.white,
+        fontSize: 16,
       ),
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
@@ -53,11 +53,11 @@ class MyTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
         ),
-        fillColor: Colors.blueGrey.shade900, // Tło dla pola tekstowego
+        fillColor: Colors.blueGrey.shade900,
         filled: true,
         hintText: hintText,
         hintStyle: TextStyle(
-          color: Colors.blueGrey[400], // Szary kolor dla podpowiedzi
+          color: Colors.blueGrey[400],
         ),
         errorText: errorMsg,
       ),

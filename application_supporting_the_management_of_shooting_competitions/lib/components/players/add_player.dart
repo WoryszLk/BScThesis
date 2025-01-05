@@ -10,7 +10,7 @@ class AddPlayerForm extends StatelessWidget {
   final PlayerService playerService;
   final Player? editingPlayer;
   final VoidCallback onClearForm;
-  final VoidCallback onSavePlayer; // Nowy callback
+  final VoidCallback onSavePlayer;
 
   const AddPlayerForm({
     Key? key,
@@ -77,7 +77,8 @@ class AddPlayerForm extends StatelessWidget {
           ),
           const SizedBox(height: 32.0),
           ElevatedButton(
-            onPressed: onSavePlayer, // Zapisanie zawodnika
+            // Saving competitior
+            onPressed: onSavePlayer, 
             child: Text(editingPlayer == null ? 'Dodaj zawodnika' : 'Zapisz zmiany'),
           ),
           if (editingPlayer != null)

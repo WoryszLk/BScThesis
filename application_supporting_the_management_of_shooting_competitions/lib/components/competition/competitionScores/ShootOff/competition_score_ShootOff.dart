@@ -218,7 +218,7 @@ class _ShootOffPageState extends State<ShootOffPage> {
               bracket: bracket,
               onEditMatch: _saveBracketToFirestore,
               onEndCompetition: _endCompetition,
-              selectedPlayers: widget.selectedPlayers, // Dodajemy brakujący argument
+              selectedPlayers: widget.selectedPlayers,
             ),
     );
   }

@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 class CustomButton extends StatelessWidget {
   final double width;
   final double height;
-  final String? imagePath;  // Używamy nullable String dla obrazu
-  final Color? backgroundColor;  // Nowy parametr dla koloru tła
+  final String? imagePath;
+  final Color? backgroundColor;
   final VoidCallback onPressed;
   final String text;
 
   const CustomButton({
     required this.width,
     required this.height,
-    this.imagePath,  // Obraz jest teraz opcjonalny
-    this.backgroundColor,  // Kolor tła jest teraz opcjonalny
+    this.imagePath,
+    this.backgroundColor,
     required this.onPressed,
     required this.text,
     Key? key,
@@ -32,8 +32,8 @@ class CustomButton extends StatelessWidget {
       child: Ink(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          color: backgroundColor,  // Ustawiamy kolor tła
-          image: imagePath != null  // Ustawiamy obraz tylko, jeśli został podany
+          color: backgroundColor,
+          image: imagePath != null
               ? DecorationImage(
                   image: AssetImage(imagePath!),
                   fit: BoxFit.cover,

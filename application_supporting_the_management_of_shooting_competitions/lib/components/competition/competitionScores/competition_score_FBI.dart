@@ -53,7 +53,6 @@ class _CompetitionScoreFBIState extends State<CompetitionScoreFBI> {
   @override
   void initState() {
     super.initState();
-    // Inicjalizacja punktów dla każdego zawodnika
     _scores = widget.competitionWithId.competition.players.map((player) {
       return PlayerScoreFBI(playerId: player.id);
     }).toList();
