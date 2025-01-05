@@ -53,4 +53,5 @@ app.*.map.json
 # Security
 *.env
 **/web/firebase-config.json
-
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
