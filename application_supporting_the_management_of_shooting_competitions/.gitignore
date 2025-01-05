@@ -49,3 +49,8 @@ app.*.map.json
 /android/.idea/
 /android/local.properties
 /android/.vscode/
+
+# Security
+*.env
+**/web/firebase-config.json
+

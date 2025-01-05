@@ -195,7 +195,6 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
 
           for (var table in excel.tables.keys) {
             for (var row in excel.tables[table]!.rows.skip(1)) {
-              // Zakładamy, że pierwsza linia to nagłówki
               if (row.length >= 2) {
                 final firstName = row[0]?.value.toString() ?? '';
                 final lastName = row[1]?.value.toString() ?? '';
@@ -203,7 +202,6 @@ class _PlayerListSelectorState extends State<PlayerListSelector> {
                     ? row[2]?.value.toString()
                     : null;
 
-                // Dodajemy warunek: imię i nazwisko muszą być uzupełnione
                 if (firstName.isNotEmpty && lastName.isNotEmpty) {
                   final newPlayer = Player(
                     id: _uuid.v4(),
