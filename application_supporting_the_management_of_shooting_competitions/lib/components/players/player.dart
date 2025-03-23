@@ -21,12 +21,11 @@ class Player {
   }
 
   factory Player.fromMap(Map<String, dynamic> map) {
-  return Player(
-    // Securing it in case of an empty ID field
-    id: map['id'] ?? 'Brak ID', 
-    firstName: map['firstName'] ?? 'Nieznane imię',
-    lastName: map['lastName'] ?? 'Nieznane nazwisko',
-    age: map['age'],
-  );
-}
+    return Player(
+      id: map['id'] ?? 'unknown_id',
+      firstName: map['firstName'] ?? 'Nieznane imię',
+      lastName: map['lastName'] ?? 'Nieznane nazwisko',
+      age: map['age'],
+    );
+  }
 }

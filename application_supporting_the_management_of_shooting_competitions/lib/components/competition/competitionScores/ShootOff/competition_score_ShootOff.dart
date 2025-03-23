@@ -25,6 +25,7 @@ class _ShootOffPageState extends State<ShootOffPage> {
   late List<Map<String, dynamic>> bracket = [];
   bool isQualificationPhase = true;
   bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -41,12 +42,21 @@ class _ShootOffPageState extends State<ShootOffPage> {
           .get();
 
       if (snapshot.exists && snapshot.data() != null) {
-        if (snapshot.data()!['qualificationScores'] != null) {
-          final scores = snapshot.data()!['qualificationScores'] as List<dynamic>;
+        final data = snapshot.data()!;
+        if (data['qualificationScores'] != null) {
+          final scores = data['qualificationScores'] as List<dynamic>;
           setState(() {
             playerResults = scores.map((score) {
               final player = widget.selectedPlayers.firstWhere(
                 (p) => p.id == score['playerId'],
+                orElse: () => PlayerWithId(
+                  id: score['playerId'] ?? 'unknown_id',
+                  player: Player(
+                    id: score['playerId'] ?? 'unknown_id',
+                    firstName: 'Nieznany',
+                    lastName: 'Nieznany',
+                  ),
+                ),
               );
               return {
                 'player': player,
@@ -59,15 +69,31 @@ class _ShootOffPageState extends State<ShootOffPage> {
           _initializePlayerResults();
         }
 
-        if (snapshot.data()!['tournamentBracket'] != null) {
-          final bracketData = snapshot.data()!['tournamentBracket'] as List<dynamic>;
+        if (data['tournamentBracket'] != null) {
+          final bracketData = data['tournamentBracket'] as List<dynamic>;
           setState(() {
             bracket = bracketData.map((match) {
               final player1 = widget.selectedPlayers.firstWhere(
                 (p) => p.id == match['player1Id'],
+                orElse: () => PlayerWithId(
+                  id: 'unknown_id',
+                  player: Player(
+                    id: 'unknown_id',
+                    firstName: 'Nieznany',
+                    lastName: 'Nieznany',
+                  ),
+                ),
               );
               final player2 = widget.selectedPlayers.firstWhere(
                 (p) => p.id == match['player2Id'],
+                orElse: () => PlayerWithId(
+                  id: 'unknown_id',
+                  player: Player(
+                    id: 'unknown_id',
+                    firstName: 'Nieznany',
+                    lastName: 'Nieznany',
+                  ),
+                ),
               );
               return {
                 'player1': {'player': player1},
@@ -75,6 +101,7 @@ class _ShootOffPageState extends State<ShootOffPage> {
                 'time1': match['time1'] ?? 0.0,
                 'time2': match['time2'] ?? 0.0,
                 'winner': match['winner'],
+                'roundNumber': match['roundNumber'] ?? 1,
               };
             }).toList();
           });
@@ -83,7 +110,12 @@ class _ShootOffPageState extends State<ShootOffPage> {
         _initializePlayerResults();
       }
     } catch (e) {
-      print("Error loading data: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Błąd podczas ładowania danych: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     } finally {
       setState(() {
         isLoading = false;
@@ -103,36 +135,21 @@ class _ShootOffPageState extends State<ShootOffPage> {
     });
   }
 
-  Future<void> _saveResultsToFirestore(List<Map<String, dynamic>> updatedResults) async {
-    final scores = updatedResults.map((result) {
-      return {
-        'playerId': result['player'].id,
-        'time1': result['time1'],
-        'time2': result['time2'],
-      };
-    }).toList();
-
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('competitions')
-        .doc(widget.competitionId)
-        .update({'qualificationScores': scores});
-  }
-
   Future<void> _saveBracketToFirestore(List<Map<String, dynamic>> updatedBracket) async {
     try {
-      print("Saving bracket data: $updatedBracket");
-
       final bracketData = updatedBracket.map((match) {
         final player1 = match['player1']?['player'];
         final player2 = match['player2']?['player'];
         final winner = match['winner'];
+        final roundNumber = match['roundNumber'] ?? 1;
 
         return {
-          'player1Id': player1 != null ? player1.id : null,
-          'player2Id': player2 != null ? player2.id : null,
+          'player1Id': player1?.id ?? null,
+          'player2Id': player2?.id ?? null,
           'winner': winner,
+          'time1': match['time1'] ?? 0.0,
+          'time2': match['time2'] ?? 0.0,
+          'roundNumber': roundNumber,
         };
       }).toList();
 
@@ -143,9 +160,13 @@ class _ShootOffPageState extends State<ShootOffPage> {
           .doc(widget.competitionId)
           .update({'tournamentBracket': bracketData});
 
-      print("Bracket data saved successfully");
     } catch (e) {
-      print("Error saving bracket data: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Błąd zapisu drabinki: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -153,42 +174,22 @@ class _ShootOffPageState extends State<ShootOffPage> {
     setState(() {
       isQualificationPhase = false;
       bracket = [];
+      int roundNumber = 1;
+
       for (int i = 0; i < playerResults.length ~/ 2; i++) {
+        final player1 = playerResults[i]['player'];
+        final player2 = playerResults[playerResults.length - i - 1]['player'];
         bracket.add({
-          'player1': playerResults[i],
-          'player2': playerResults[playerResults.length - i - 1],
+          'player1': {'player': player1},
+          'player2': {'player': player2},
+          'time1': 0.0,
+          'time2': 0.0,
           'winner': null,
+          'roundNumber': roundNumber,
         });
       }
     });
     _saveBracketToFirestore(bracket);
-  }
-
-  Future<void> _endCompetition() async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('competitions')
-          .doc(widget.competitionId)
-          .update({'status': 'Zakończone'});
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Zawody zostały zakończone.'),
-          backgroundColor: Colors.green,
-        ),
-      );
-
-      Navigator.pop(context);
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Błąd podczas kończenia zawodów: $error'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
   }
 
   @override
@@ -196,7 +197,7 @@ class _ShootOffPageState extends State<ShootOffPage> {
     if (isLoading) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Wczytywanie...'),
+          title: const Text('Wczytywanie...'),
         ),
         body: const Center(
           child: CircularProgressIndicator(),
@@ -211,13 +212,13 @@ class _ShootOffPageState extends State<ShootOffPage> {
       body: isQualificationPhase
           ? ShootOffQualificationPhase(
               playerResults: playerResults,
-              onSaveResults: _saveResultsToFirestore,
+              onSaveResults: _saveBracketToFirestore,
               onGenerateBracket: _generateBracket,
             )
           : ShootOffTournamentPhase(
               bracket: bracket,
               onEditMatch: _saveBracketToFirestore,
-              onEndCompetition: _endCompetition,
+              competitionId: widget.competitionId,
               selectedPlayers: widget.selectedPlayers,
             ),
     );
